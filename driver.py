@@ -169,7 +169,7 @@ OUTPUT: None
 def run_sim(output_fp: str, tuples: int = 100):
     print("Begining")
     while not Tutor.is_finished():
-        t = Tutor('output.csv', tuples)
+        t = Tutor(output_fp, tuples)
         t.generate_students()
     print("Completed")
 
