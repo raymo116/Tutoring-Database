@@ -1,0 +1,98 @@
+CPSC 220 Scientific Computing I
+CPSC 229 Experimental Course
+CPSC 230 Computer Science I
+CPSC 231 Computer Science II
+CPSC 236 Visual Programming
+CPSC 242 Introduction to the Game Industry
+CPSC 244 Level Design I
+CPSC 245 Unity Programming
+CPSC 246 The Unreal Game Engine
+CPSC 250 Computer Systems and Assembly Language Programming
+CPSC 260 Introduction to Robotics
+CPSC 285 Social and Ethical Issues in Computing
+CPSC 290 Independent Internship
+CPSC 291 Student-Faculty Research/Creative Activity
+CPSC 298 Computer Science Colloquium
+CPSC 299 Individual Study
+CPSC 308 Enterprise Data Management
+CPSC 320 Quantum Information Science
+CPSC 329 Experimental Course
+CPSC 330 Digital Logic Design I
+CPSC 330L Lab - Digital Logic Design I
+CPSC 340 Game Development
+CPSC 344 Level Design II
+CPSC 348 Software Engineering
+CPSC 350 Data Structures and Algorithms
+CPSC 351 Computer Architecture I
+CPSC 352 Computer Architecture II
+CPSC 353 Data Communications and Computer Networks
+CPSC 354 Programming Languages
+CPSC 355 Human Computer Interaction
+CPSC 356 Android Application Development
+CPSC 357 iOS Application Development
+CPSC 358 Assistive Technology
+CPSC 360 Computer Graphics
+CPSC 366 Digital Logic Design II
+CPSC 370 Topics in Computer Science
+CPSC 380 Operating Systems
+CPSC 390 Artificial Intelligence
+CPSC 392 Introduction to Data Science
+CPSC 393 Machine Learning
+CPSC 399 Individual Study
+CPSC 402 Compiler Construction
+CPSC 406 Algorithm Analysis
+CPSC 408 Database Management
+CPSC 430 Computational Economics
+CPSC 435 BioMedical Informatics
+CPSC 440 Collaborative Game Development
+CPSC 445 High Performance Computing
+CPSC 453 Network Implementation and Security
+CPSC 458 Web Engineering
+CPSC 465 Integrated Circuit Design I
+CPSC 466 Integrated Circuit Design II
+CPSC 490 Independent Internship
+CPSC 491 Student-Faculty Research/Creative Activity
+CPSC 499 Individual Study
+MATH 098 Elementary Algebra
+MATH 099 Intermediate Algebra
+MATH 104 Pre-Calculus Mathematics
+MATH 108 The Nature of Mathematics
+MATH 109 Calculus with Applications in Business and Social Science
+MATH 110 Single Variable Calculus I
+MATH 111 Single Variable Calculus II
+MATH 115 Calculus Part I: Differentiation and Integration
+MATH 116 Calculus Part II: Optimization and Differential Equations
+MATH 120 Introduction to Cryptography: The Mathematics of Privacy
+MATH 199 Individual Study
+MATH 203 Introduction to Statistics
+MATH 208 Foundations of Geometry
+MATH 210 Multivariable Calculus
+MATH 211 Linear Algebra
+MATH 215 Introduction to Linear Algebra and Differential Equations
+MATH 220 Scientific Computing I
+MATH 229 Experimental Course
+MATH 250 Discrete Mathematics I
+MATH 251 Discrete Mathematics II
+MATH 260 Number Theory
+MATH 280 Mathematics Tutoring
+MATH 290 Independent Internship
+MATH 291 Student-Faculty Research/Creative Activity
+MATH 299 Individual Study
+MATH 303 Biostatistics
+MATH 310 History of Mathematics
+MATH 315 Linear Algebra II (Advanced Linear Algebra)
+MATH 350 Differential Equations
+MATH 360 Probability Theory
+MATH 361 Mathematical Statistics
+MATH 370 Special Topics in Mathematics
+MATH 380 Introduction to Abstract Algebra
+MATH 390 Introduction to Differential Geometry
+MATH 399 Individual Study
+MATH 440 Topology
+MATH 450 Real Analysis
+MATH 451 Complex Analysis
+MATH 453 Foundations of Quantum Mechanics
+MATH 454 Numerical Analysis
+MATH 460 Modern Algebra
+MATH 464 Game Theory I
+MATH 481 Economic Systems Design I: Principles and Experiments
