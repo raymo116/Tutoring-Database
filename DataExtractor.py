@@ -1,9 +1,11 @@
+#Authors: Daniel Briseno, Matthew Raymond
 import csv
 
+#helper methods
 def extractNames(rawName:str):
         name_lst = rawName.split(" ")
         if len(name_lst)==2:
-            name_lst.insert(1,'N/A')
+            name_lst.insert(1,'!')
         return name_lst
     
 def extractClass(rawClass:str):
@@ -13,6 +15,8 @@ def extractClass(rawClass:str):
     class_dict["Class_Name"] = " ".join(class_lst[2:])
     return class_dict
 
+#these constants make list indexing simpler when
+#dealing with faker data
 s_name = 0
 sid = 1
 t_ins = 2
@@ -27,9 +31,10 @@ table = 9
 
 class Data_Extractor:
     '''The purpose of this class is to create lists from the given input of the form:
+    tutor_class := [(tutor_id:int, class_id:str)]
     classes :=[(class_id:str, class_name:str)]
     student_tmsht := [(student_id:int, time_in_student:str, time_out_student:str, tutor_id:int)]
-    Tutor_tmsht := [(time_in_tutor:str, tutor_id:int, time_out_tutor:str, table:int)]
+    tutor_tmsht := [(time_in_tutor:str, tutor_id:int, time_out_tutor:str, table:int)]
     students := [(first_name:str, middle_name:str, last_name:str, student_id:int)]
     '''
    
@@ -68,15 +73,19 @@ class Data_Extractor:
         t_in = row[t_ins]
         t_out = row[t_outs]
         tutor_id = int(row[tid])
-        self.student_tmsht.append((t_in,student_id,t_out,tutor_id))
+        session = (t_in,student_id,t_out,tutor_id)
+        if not session in self.student_tmsht:
+            self.student_tmsht.append(session)
 
     def add_to_tutor_tmsht(self, row):
-         #[tutor_id:int, time_in_tutor:str, time_out_tutor:str, table:int, class:str]
         tutor_id = int(row[tid])
         time_in = row[t_intu]
         time_out = row[t_outtu]
         tbl = int(row[table][:-1])
-        self.tutor_tmsht.append((time_in,tutor_id,time_out,tbl))
+        class_id = extractClass(row[class_name])["Class_ID"]
+        shift = (time_in,tutor_id,time_out,tbl)
+        if not shift in self.tutor_tmsht:
+            self.tutor_tmsht.append(shift)
 
 
         
