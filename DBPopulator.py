@@ -4,14 +4,20 @@ from DataExtractor import Data_Extractor
 import mysql.connector 
 from mysql.connector import MySQLConnection, Error
 from sys import argv
+conn_config = True
+try:
+    import DbConfig
+except ImportError:
+    conn_config = False
 
 
 #initiate connection
-try:
-    conn = mysql.connector.connect(host = '35.236.254.178',user = "root", passwd = "thisisdanielspassword", database = 'TutoringDatabase')
-    cursor = conn.cursor()
-except mysql.connector.Error as err:
-    print(err)
+if conn_config:
+    try:
+        conn = mysql.connector.connect(host=DbConfig.host, user=DbConfig.user, passwd=DbConfig.passwd, database=DbConfig.database)
+        cursor = conn.cursor()
+    except mysql.connector.Error as err:
+        print(err)
 
 
 
@@ -136,9 +142,9 @@ def close_conn():
 
 
 if __name__ == '__main__':
-    if len(argv)>1:
-        close_conn()
+    if len(argv)>1 and not conn_config:
         try:
+            close_conn()
             conn = mysql.connector.connect(host = argv[1],user = argv[2], passwd = argv[3], database = argv[4])
             cursor = conn.cursor()
         except mysql.connector.Error as err:
