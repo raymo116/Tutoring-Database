@@ -7,4 +7,4 @@ In order to connect to the database, you must have a file in this folder titled 
 <username>
 <password>
 <database_name>
-```Â
+```
