@@ -13,8 +13,8 @@
   - classes.txt (used by faker)
 - To Run Faker: `$ python driver.py <output_file> <num tuples>`
 - To populate DB:
-  - Preferred: Define file DbConfig.py in same directory as DBPopulator.py with constants:
-    - host= ipaddr, user = username, passwd = db password = wrd, database = db name, csv_path = path to faker csv file
+  - Preferred: Define file `DbConfig.py` in same directory as `DBPopulator.py` with constants:
+    - `host`= ipaddr, `user` = username, `passwd` = db password, `database` = db name, `csv_path` = path to faker csv file
     - Then run `$python DBPopulator.py`
   -  Else:
   -  `$ python DBPopulater.py <host ip> <user> <password> <database name> <csv_path>`
