@@ -4,31 +4,50 @@ from DataExtractor import Data_Extractor
 import mysql.connector 
 from mysql.connector import MySQLConnection, Error
 from sys import argv
+import os
+
+#import db connection details if DbConfig.py file is found in directory
 conn_config = True
 try:
     import DbConfig
 except ImportError:
     conn_config = False
 
+#place conn and cursor variables in global namespace
+conn = None
+cursor = None
 
 #initiate connection
-if conn_config:
+if conn_config: #if DbConfig.py found in directory
     try:
         conn = mysql.connector.connect(host=DbConfig.host, user=DbConfig.user, passwd=DbConfig.passwd, database=DbConfig.database)
         cursor = conn.cursor()
     except mysql.connector.Error as err:
         print(err)
+        exit(0)
+elif len(argv)>1: #if database connection details given via command-line argument
+        try:
+            conn = mysql.connector.connect(host = argv[1],user = argv[2], passwd = argv[3], database = argv[4])
+            cursor = conn.cursor()
+        except mysql.connector.Error as err:
+            print(err)
+            exit(0)
+else:
+    print("Database Connection Details not specified\nApplication closing")
+    exit(0)
 
 
 
-#begin populating tables
-'''
-DESC: Populates Student table
-INPUT: students: list
-    - A list of form [(first name:str, middle name:str, last name:str,sid:int)]
-OUTPUT: None
-'''
+
+#begin table populating function definitions
+
 def populate_students(students:list):
+    '''
+    DESC: Populates Student table
+    INPUT: students: list
+        - A list of form [(first name:str, middle name:str, last name:str,sid:int)]
+    OUTPUT: None                                         
+    '''
     for student in students:
         try:
             cursor.callproc('sp_add_student', student)
@@ -36,13 +55,14 @@ def populate_students(students:list):
         except Error as e:
             print("When trying to add",student,"to student table, the following error occured:")
             print(e)
-'''
-DESC: Populates Tutor table
-INPUT: tutors_classes: list
-    - A list of form [(tutor_id:int, class_id:str)]
-OUTPUT: None
-'''
+
 def populate_tutors(tutors_classes:list):
+    '''
+    DESC: Populates Tutor table
+    INPUT: tutors_classes: list
+        - A list of form [(tutor_id:int, class_id:str)]
+    OUTPUT: None
+    '''
     tutors = [] #tutors will be list of tutor ids without repeats
     #construct tutors list
     for tutors_c in tutors_classes:
@@ -57,13 +77,14 @@ def populate_tutors(tutors_classes:list):
             print("When trying to add", tutor, "to tutors table, the following error occured:")
             print(e)
 
-'''
-DESC: Populates time_visited table
-INPUT: student_tmsht:list
-    - A list of the form [(student id:int, time in student:str, time out student:str, tutor id:int)]
-OUTPUT: None
-'''
+
 def populate_time_visited(student_tmsht:list):
+    '''
+    DESC: Populates time_visited table
+    INPUT: student_tmsht:list
+        - A list of the form [(student id:int, time in student:str, time out student:str, tutor id:int)]
+    OUTPUT: None
+    '''
     for session in student_tmsht:
         #construct parameter for checking student in
         args = [session[3],session[1],session[0]]
@@ -84,22 +105,27 @@ def populate_time_visited(student_tmsht:list):
             print("When checking out session", args,"the following error occured")
             print(e)
 
-'''
-DESC: Populates TimeSheet table
-INPUT: tutor_tmsht:list
-    - A list of the form [(time in tutor:str, tutor id:int, time out tutor:str, table:int)]
-OUTPUT: None
-'''
+
 def populate_tutor_timesheet(tutor_tmsht:list):
+    '''
+    DESC: Populates TimeSheet table
+    INPUT: tutor_tmsht:list
+        - A list of the form [(time in tutor:str, tutor id:int, time out tutor:str, table:int)]
+    OUTPUT: None
+    '''
     for shift in tutor_tmsht:
+        #collect data for tutor_check_in table insertion
         args = [shift[0],shift[1],shift[3]]
+        #check tutor in via stored procedure
         try:
             cursor.callproc('sp_tutor_in',args)
             conn.commit()
         except Error as e:
             print("When checking in tutor shift", args,"the following error occured")
             print(e)
+        #collect data for tutor_check_out table insertion
         args = [shift[2],shift[1]]
+        #check tutor out via stored procedure
         try:
             cursor.callproc('sp_tutor_out',args)
             conn.commit()
@@ -108,6 +134,12 @@ def populate_tutor_timesheet(tutor_tmsht:list):
             print(e)
 
 def populate_tutor_times(tutor_tmsht:list):
+    '''
+    DESC: Populates TimeSheet table
+    INPUT: tutor_tmsht:list
+        - A list of the form [(time in tutor:str, tutor id:int, time out tutor:str, table:int)]
+    OUTPUT: None
+    '''
     for shift in tutor_tmsht:
         args = [shift[0],shift[2],shift[1]]
         try:
@@ -118,6 +150,12 @@ def populate_tutor_times(tutor_tmsht:list):
             print(e)
 
 def populate_class(classes:list):
+    '''
+    DESC: Populates Class table
+    INPUT: classes:list
+        - A list of the form [(Class_id:str, Class_name:str)]
+    OUTPUT: None
+    '''
     for c in classes:
         try:
             cursor.callproc('sp_add_class',c)
@@ -127,6 +165,12 @@ def populate_class(classes:list):
             print(e)
 
 def populate_tutors_class(tutor_classes:list):
+    '''
+    DESC: Populates Tutors table
+    INPUT: tutor_classes:list
+        - List of the form [(tutor_id:int, class_id:str)]
+    OUTPUT: None
+    '''
     for tc in tutor_classes:
         try:
             cursor.callproc('sp_add_tutor_class',tc)
@@ -142,14 +186,12 @@ def close_conn():
 
 
 if __name__ == '__main__':
-    if len(argv)>1 and not conn_config:
-        try:
-            close_conn()
-            conn = mysql.connector.connect(host = argv[1],user = argv[2], passwd = argv[3], database = argv[4])
-            cursor = conn.cursor()
-        except mysql.connector.Error as err:
-            print(err)
-    extractor = Data_Extractor()
+    #extract and parse data from flat csv file
+    extractor = None
+    if conn_config:
+        extractor = Data_Extractor(DbConfig.csv_path)
+    else:
+        extractor = Data_Extractor(input("Enter csv path"))
     #begin populating db table by table
     print("Populating Student table")
     populate_students(extractor.students)

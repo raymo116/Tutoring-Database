@@ -40,14 +40,17 @@ class Data_Extractor:
         students := [(first_name:str, middle_name:str, last_name:str, student_id:int)]
     '''
    
-
-    def __init__(self):
+    def __init__(self,csv_path = "output.csv"):
+        '''
+        DESC: Class constructor
+        INPUT: File path to csv faker file, defaults to ./output.csv
+        '''
         self.classes = []
         self.student_tmsht = []
         self.tutor_tmsht = []
         self.students = []
         self.tutor_classes = []
-        self.extract("output.csv")
+        self.extract(csv_path)
     
     def extract(self, csv_path):
         '''
@@ -157,7 +160,7 @@ class Data_Extractor:
 
         INPUT: row:list
             - A list of items as described in extract() docstrings
-        
+
         OUTPUT: None
         '''
         #create (id,fname, mname, lname) tuple for student entry

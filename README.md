@@ -3,8 +3,8 @@
 - To Run Faker: `$ python driver.py <output_file> <num tuples>`
 - To populate DB:
   - Preffered: Define file DBPopulator.py in same directory as DBPopulator.py with constants:
-    - host= ipaddr, user = username, passwd = db password = wrd, database = db name
+    - host= ipaddr, user = username, passwd = db password = wrd, database = db name, csv_path = path to faker csv file
     - Then run `$python DBPopulator.py`
   -  Else:
-  -  `$ python DBPopulater.py <host ip> <user> <password> <database name>`
+  -  `$ python DBPopulater.py <host ip> <user> <password> <database name> <csv_path>`
 - All DDL Statments in SQLDDL folder 
