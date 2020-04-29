@@ -1,3 +1,4 @@
 .ds_store
 DbConfig.py
 *.pyc
+con.data
