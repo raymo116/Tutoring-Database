@@ -191,7 +191,7 @@ if __name__ == '__main__':
     if conn_config:
         extractor = Data_Extractor(DbConfig.csv_path)
     else:
-        extractor = Data_Extractor(input("Enter csv path"))
+        extractor = Data_Extractor(argv[5])
     #begin populating db table by table
     print("Populating Student table")
     populate_students(extractor.students)

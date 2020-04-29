@@ -1,6 +1,6 @@
 #Authors: Daniel Briseno, Matthew Raymond
 import csv
-
+from os import path
 #helper methods
 def extractNames(rawName:str):
         name_lst = rawName.split(" ")
@@ -45,6 +45,9 @@ class Data_Extractor:
         DESC: Class constructor
         INPUT: File path to csv faker file, defaults to ./output.csv
         '''
+        if not path.exists(csv_path):
+            print("csv file", csv_path, "not found, application exiting")
+            exit(0)
         self.classes = []
         self.student_tmsht = []
         self.tutor_tmsht = []
