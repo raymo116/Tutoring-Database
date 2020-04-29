@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Hello World!</title>
+        <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
+    </head>
+    <body>
+        <script type="text/javascript">
+            var mysql = require('mysql');
+            const fs = require('fs')
+
+            var IP_ADDRESS, USER, PASSWORD, DATABASE_NAME;
+            var CONNECTION;
+            var DATA;
+
+            fs.readFile('./con.data', 'utf8', (err, data) => {
+                if (err) {
+                    console.error(err)
+                    return
+                }
+
+                data = data.split(/\r?\n/);
+
+                IP_ADDRESS = data[0];
+                USER = data[1];
+                PASSWORD = data[2];
+                DATABASE_NAME = data[3];
+
+                fnCreateConnection();
+
+                fnRunQuery('call sp_get_tutor_times(94210);', function(d) {
+                    console.log(d);
+                });
+
+                fnCloseConnection();
+            });
+
+            function fnCreateConnection() {
+                // Add the credentials to access your database
+                CONNECTION = mysql.createConnection({
+                    host     : IP_ADDRESS,
+                    user     : USER,
+                    password : PASSWORD,
+                    database : DATABASE_NAME
+                });
+
+                CONNECTION.connect();
+
+            }
+
+            function fnCloseConnection() {
+                CONNECTION.end();
+            }
+
+            function fnRunQuery(strQuery, fncallback) {
+                CONNECTION.query(strQuery, function(err, rows, fields) {
+                  if (err) throw err;
+
+                  fncallback(rows);
+                });
+            }
+
+            function fnLog() {
+                if(typeof(console) !== 'undefined') {
+                    console.log.apply(console, arguments);
+                }
+            }
+        </script>
+    </body>
+</html>

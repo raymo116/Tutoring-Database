@@ -1,0 +1,13 @@
+{
+    "name": "web_mockup",
+    "version": "1.0.0",
+    "description": "",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron ."
+    },
+    "dependencies": {
+        "electron": "^8.2.4",
+        "mysql": "^2.18.1"
+    }
+}
