@@ -8,17 +8,64 @@
 
         <script>let $ = require('jquery');</script>
         <link rel="stylesheet" type="text/css" href="./style.css">
+
+        <!-- Fonts -->
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
         <!--    -->
+
+        <!-- Scripts -->
+        <script src="formatting.js"></script>
     </head>
     <body>
         <script type="text/javascript">
             var mysql = require('mysql');
             const fs = require('fs');
 
+            const TEST_DATA = [
+                {"ID": "1", "FName": "Matt", "MName": "J", "LName": "Raymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
+                {"ID": "3", "FName": "Mctt", "MName": "J", "LName": "Rcymond"}
+            ]
 
             var IP_ADDRESS, USER, PASSWORD, DATABASE_NAME;
             var CONNECTION;
             var DATA;
+
 
             fs.readFile('./con.data', 'utf8', (err, data) => {
                 if (err) {
@@ -35,7 +82,10 @@
 
                 fnCreateConnection();
 
-                fnRunQuery('select * from Student', fnFillData);
+                var lstHeader = ["ID", "First Name", "Middle Name", "Last Name"];
+                var lstFields = ["ID", "FName", "MName", "LName"];
+
+                fnRunQuery('select * from Student', fnFillData, lstHeader, lstFields, 'grid');
 
                 fnCloseConnection();
             });
@@ -57,11 +107,11 @@
                 CONNECTION.end();
             }
 
-            function fnRunQuery(strQuery, fncallback) {
+            function fnRunQuery(strQuery, fncallback, ...rest) {
                 CONNECTION.query(strQuery, function(err, rows, fields) {
                   if (err) throw err;
 
-                  fncallback(rows);
+                  fncallback(rows, rest);
                 });
             }
 
@@ -70,40 +120,9 @@
                     console.log.apply(console, arguments);
                 }
             }
-
-            function fnFillData(data) {
-                var grid = $('#grid')[0];
-
-                var item = `<tr>
-                                <th>ID</th>
-                                <th>First Name</th>
-                                <th>Middle Name</th>
-                                <th>Last Name</th>
-                            </tr>`;
-                grid.innerHTML += item;
-
-                for (var i = 0; i < data.length; i++) {
-                    // console.log(data[i]);
-                    var id = data[i]["ID"];
-                    var fname = data[i]["FName"];
-                    var mname = data[i]["MName"];
-                    var lname = data[i]["LName"];
-
-                    item = `<tr>
-                                <th>${id}</th>
-                                <th>${fname}</th>
-                                <th>${mname}</th>
-                                <th>${lname}</th>
-                            </tr>`;
-
-                    grid.innerHTML += item;
-                }
-            }
         </script>
         <h1>Student Information</h1>
-        <div class="table-container">
-            <table id="grid">
-            </table>
+        <div id='grid'class="table-container">
         </div>
     </body>
 </html>
