@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "electron": "^8.2.4",
+        "jquery": "^3.5.0",
         "mysql": "^2.18.1"
     }
 }
