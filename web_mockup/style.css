@@ -1,3 +1,9 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
 }
@@ -16,23 +22,23 @@ table, th, td {
 
 table {
   border-collapse:collapse;
+  text-align: left;
 }
 
 th.header {
     font-style: bold;
-    padding-left: 10px;
-    padding-right: 10px;
-    background-color: black;
+    background-color: #231F20; /* panther black */
     color: white;
 }
 
-body {
-    background-color: darkgrey;
+th {
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .table-container {
     overflow-y: scroll;
-    max-height: 300px;
+    height: 100%;
     background: white;
     display: inline-block;
 }
@@ -47,4 +53,103 @@ body {
   border-radius: 4px;
   background-color: rgba(0, 0, 0, .5);
   box-shadow: 0 0 1px rgba(255, 255, 255, .5);
+}
+
+/* Main Screen */
+div.main-title {
+    background-color: #A50034; /* chapman red */
+    height:200px;
+    width: 100%;
+    text-align: center;
+}
+
+h1.main-title {
+    font-size: 50pt;
+    color: white;
+    display: inline-block;
+}
+
+.row {
+    text-align: center;
+    display: inline-block;
+    /* width: 25%; */
+    /* margin-left: auto; */
+    /* vertical-align: top; */
+}
+
+button {
+    font-size: 30pt;
+    margin: 20px;
+    padding: 5px;
+    width: 200px;
+    display:inline-block;
+    border-radius: 5pt;
+    border: 0px;
+}
+
+button.good {
+    color: white;
+    background-color: #00966C; /* grove */
+}
+
+button.normal {
+    color: white;
+    background-color: #231F20; /* panther black */
+}
+
+button.white, button.enter, button.clear {
+    width: 60px;
+    height: 60px;
+    border: 1px solid #231F20;
+    box-shadow: 1px 1px lightgrey;
+    margin: 2px;
+}
+
+button.enter {
+    color: white;
+    background-color: #00966C;
+    border: 0px;
+}
+
+button.clear {
+    color: white;
+    background-color: #A50034;
+    border: 0px;
+}
+
+input[type="number"] {
+    font-size: 30pt;
+    text-align: center;
+    border: 1px solid #231F20;
+    border-radius: 5pt;
+    margin-bottom: 2px;
+}
+
+.login-buttons {
+    display: inline-block
+    vertical-align: top;
+}
+
+.info-panel {
+    display: inline-block;
+    /* background-color: lightgrey; */
+    height: 500px;
+    width: 80%;
+    margin-right: 20%;
+    text-align: center;
+}
+
+.main-screen-container {
+    margin-top: 100px;
+    text-align: center;
+    column-count: 2;
+}
+
+/* Remove arrows on number input */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0;
 }

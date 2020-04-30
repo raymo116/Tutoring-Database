@@ -83,9 +83,10 @@
                 fnCreateConnection();
 
                 var testingStudentQuery = 'select ID, FName as `First Name`, MName as `Middle Name`, LName as `Last Name` from Student S where S.ID not in (select * from Tutors)';
-                var testingStudentQuery =
+                var testingTutorQuery = 'select FName as `First Name`, LName as `Last Name` from (select ID, FName, LName from Student S where S.ID in ( select * from Tutors) ) as T order by `Last Name` asc, `First Name` asc;';
 
-                fnRunQuery(testingStudentQuery, fnFillData, 'grid1');
+                fnRunQuery(testingTutorQuery, fnFillData, 'info-grid');
+                // fnRunQuery(testingTutorQuery, fnFillData, 'grid2');
 
                 fnCloseConnection();
             });
@@ -121,9 +122,67 @@
                 }
             }
         </script>
-        <h1>Student Information</h1>
+
+        <script type="text/javascript">
+            function fnEnterNum(item) {
+                if(item.name == "clear") $("#id_login")[0].value = "";
+                else if(item.name == "enter") {
+                    $("#id_login")[0].value = "";
+                    fnIDEntered();
+                }
+                else if ($("#id_login")[0].value.length < 9){
+                    $("#id_login")[0].value += item.innerHTML;
+                }
+                else {
+                    console.log("flashing thing here...");
+                }
+            }
+
+            function fnIDEntered() {
+                console.log("Entering...");
+            }
+        </script>
+        <!-- <h1>Student Information</h1>
         <div id='grid1' class="table-container"></div>
         <h1>Tutor Information</h1>
-        <div id='grid2' class="table-container"></div>
+        <div id='grid2' class="table-container"></div> -->
+
+        <div class="main-title">
+            <h1 class="main-title">Tutoring Database</h1>
+        </div>
+        <div class="main-screen-container">
+            <div class="login-buttons">
+                <!-- Log in -->
+                <h2>Manual Login</h2>
+                <input type="number" id="id_login" name="id_login" value="">
+                <br/>
+
+                <button type="button" onclick="fnEnterNum(this);" name="one" class="white">1</button>
+                <button type="button" onclick="fnEnterNum(this);"name="two" class="white">2</button>
+                <button type="button" onclick="fnEnterNum(this);"name="three" class="white">3</button>
+                <br/>
+                <button type="button" onclick="fnEnterNum(this);"name="four" class="white">4</button>
+                <button type="button" onclick="fnEnterNum(this);"name="five" class="white">5</button>
+                <button type="button" onclick="fnEnterNum(this);"name="six" class="white">6</button>
+                <br/>
+                <button type="button" onclick="fnEnterNum(this);"name="seven" class="white">7</button>
+                <button type="button" onclick="fnEnterNum(this);"name="eight" class="white">8</button>
+                <button type="button" onclick="fnEnterNum(this);"name="nine" class="white">9</button>
+                <br/>
+                <button type="button" onclick="fnEnterNum(this);"name="clear" class="clear">X</button>
+                <button type="button" onclick="fnEnterNum(this);"name="zero" class="white">0</button>
+                <button type="button" onclick="fnEnterNum(this);"name="enter" class="enter">✓</button>
+                <br/>
+
+                <!-- Info -->
+                <button type="button" name="tutor_list" class="normal">Tutor List</button>
+                <br/>
+                <button type="button" name="class_list" class="normal">Class List</button>
+            </div>
+            <div class="info-panel">
+                <h1>Tutors</h1>
+                <div id='info-grid' class="table-container">
+            </div>
+        </div>
     </body>
 </html>

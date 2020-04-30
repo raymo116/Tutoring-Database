@@ -21,8 +21,6 @@ function fnFillData(lstData, lstColNames, ...rest) {
     }
     table.appendChild(header);
 
-
-
     for (var i = 0; i < lstData.length; i++) {
         var row = document.createElement('tr');
         row.classList.add('row'+(i%2+1));
