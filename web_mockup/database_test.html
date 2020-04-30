@@ -82,10 +82,10 @@
 
                 fnCreateConnection();
 
-                var lstHeader = ["ID", "First Name", "Middle Name", "Last Name"];
-                var lstFields = ["ID", "FName", "MName", "LName"];
+                var testingStudentQuery = 'select ID, FName as `First Name`, MName as `Middle Name`, LName as `Last Name` from Student S where S.ID not in (select * from Tutors)';
+                var testingStudentQuery =
 
-                fnRunQuery('select * from Student', fnFillData, lstHeader, lstFields, 'grid');
+                fnRunQuery(testingStudentQuery, fnFillData, 'grid1');
 
                 fnCloseConnection();
             });
@@ -111,7 +111,7 @@
                 CONNECTION.query(strQuery, function(err, rows, fields) {
                   if (err) throw err;
 
-                  fncallback(rows, rest);
+                  fncallback(rows, fields, rest);
                 });
             }
 
@@ -122,7 +122,8 @@
             }
         </script>
         <h1>Student Information</h1>
-        <div id='grid'class="table-container">
-        </div>
+        <div id='grid1' class="table-container"></div>
+        <h1>Tutor Information</h1>
+        <div id='grid2' class="table-container"></div>
     </body>
 </html>
