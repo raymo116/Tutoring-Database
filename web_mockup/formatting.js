@@ -1,11 +1,18 @@
 function fnFillData(lstData, lstColNames, ...rest) {
-    for (var i = 0; i < lstColNames.length; i++)
-        lstColNames[i] = lstColNames[i]["name"];
+    if(lstData.lenght == 0) return;
+
+    var lstColNames = []
+    for (var key in lstData[0]) {
+        if (lstData[0].hasOwnProperty(key)) {
+            lstColNames.push(key);
+        }
+    }
 
     var targetID = rest[0];
 
     // Find the source
     var grid = $('#'+targetID)[0];
+    grid.innerHTML = '';
 
     var table = document.createElement('table');
 

@@ -21,50 +21,12 @@
             var mysql = require('mysql');
             const fs = require('fs');
 
-            const TEST_DATA = [
-                {"ID": "1", "FName": "Matt", "MName": "J", "LName": "Raymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "2", "FName": "Mbtt", "MName": "J", "LName": "Rbymond"},
-                {"ID": "3", "FName": "Mctt", "MName": "J", "LName": "Rcymond"}
-            ]
-
             var IP_ADDRESS, USER, PASSWORD, DATABASE_NAME;
             var CONNECTION;
             var DATA;
+
+            var GET_TUTORS_IN = 'call sp_get_tutors_in_info(null);';
+            var GET_CLASSES_TUTORED = 'call sp_get_classes_tutored();'
 
 
             fs.readFile('./con.data', 'utf8', (err, data) => {
@@ -79,16 +41,18 @@
                 USER = data[1];
                 PASSWORD = data[2];
                 DATABASE_NAME = data[3];
+            });
 
-                fnCreateConnection();
+            $(document).ready(function() {
+                $('#tutor_list').click(function() {
+                    fnRunQuery(GET_TUTORS_IN, fnFillData, 'info-grid');
+                    $('#table-header')[0].innerHTML = "Tutors"
+                });
 
-                var testingStudentQuery = 'select ID, FName as `First Name`, MName as `Middle Name`, LName as `Last Name` from Student S where S.ID not in (select * from Tutors)';
-                var testingTutorQuery = 'select FName as `First Name`, LName as `Last Name` from (select ID, FName, LName from Student S where S.ID in ( select * from Tutors) ) as T order by `Last Name` asc, `First Name` asc;';
-
-                fnRunQuery(testingTutorQuery, fnFillData, 'info-grid');
-                // fnRunQuery(testingTutorQuery, fnFillData, 'grid2');
-
-                fnCloseConnection();
+                $('#class_list').click(function() {
+                    fnRunQuery(GET_CLASSES_TUTORED, fnFillData, 'info-grid');
+                    $('#table-header')[0].innerHTML = "Classes"
+                });
             });
 
             function fnCreateConnection() {
@@ -109,11 +73,19 @@
             }
 
             function fnRunQuery(strQuery, fncallback, ...rest) {
-                CONNECTION.query(strQuery, function(err, rows, fields) {
-                  if (err) throw err;
+                fnCreateConnection();
 
-                  fncallback(rows, fields, rest);
+                CONNECTION.query(strQuery, function(err, rows, fields) {
+                    if (err) throw err;
+
+                    // If it's a stored procedure, it has to act slightly differently
+                    if(/^call [a-z_0-9]+\(.*\);$/.test(strQuery))
+                        rows = rows[0];
+
+                    fncallback(rows, fields, rest);
                 });
+
+                fnCloseConnection();
             }
 
             function fnLog() {
@@ -175,12 +147,12 @@
                 <br/>
 
                 <!-- Info -->
-                <button type="button" name="tutor_list" class="normal">Tutor List</button>
+                <button type="button" id="tutor_list" name="tutor_list" class="normal">Tutor List</button>
                 <br/>
-                <button type="button" name="class_list" class="normal">Class List</button>
+                <button type="button" id="class_list" name="class_list" class="normal">Class List</button>
             </div>
             <div class="info-panel">
-                <h1>Tutors</h1>
+                <h1 id="table-header"></h1>
                 <div id='info-grid' class="table-container">
             </div>
         </div>
