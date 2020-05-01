@@ -45,14 +45,22 @@
 
             $(document).ready(function() {
                 $('#tutor_list').click(function() {
-                    fnRunQuery(GET_TUTORS_IN, fnFillData, 'info-grid');
+                    fnCreateLoadingScreen('info-grid', 'Loading Tutor Data');
+                    fnRunQuery(GET_TUTORS_IN, fnFillData, fnTutorList, 'info-grid');
                     $('#table-header')[0].innerHTML = "Tutors"
                 });
 
                 $('#class_list').click(function() {
-                    fnRunQuery(GET_CLASSES_TUTORED, fnFillData, 'info-grid');
+                    fnCreateLoadingScreen('info-grid', 'Loading Class Data');
+                    fnRunQuery(GET_CLASSES_TUTORED, fnFillData, fnClassList, 'info-grid');
                     $('#table-header')[0].innerHTML = "Classes"
                 });
+
+
+            });
+
+            $(function(){
+                $("#modal-container").load("./modal.html");
             });
 
             function fnCreateConnection() {
@@ -154,7 +162,9 @@
             <div class="info-panel">
                 <h1 id="table-header"></h1>
                 <div id='info-grid' class="table-container">
+                </div>
             </div>
         </div>
+        <div id='modal-container'></div>
     </body>
 </html>

@@ -107,7 +107,7 @@ button.white, button.enter, button.clear {
 
 button.enter {
     color: white;
-    background-color: #00966C;
+    background-color: #00966C; /* grove */
     border: 0px;
 }
 
@@ -152,4 +152,92 @@ input[type=number]::-webkit-outer-spin-button {
     -moz-appearance: none;
     appearance: none;
     margin: 0;
+}
+
+.loader {
+  border: 5px solid white; /* Light grey */
+  border-top: 5px solid black; /* black */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 2s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes animate {
+  0%{
+    opacity: 0;
+    transform: rotateX(-90deg);
+  }
+  35%{
+    opacity: 1;
+    transform: rotateX(20deg);
+  }
+  100%{
+    opacity: 1;
+    transform: rotateX(0deg);
+  }
+}
+
+tr.selected {
+    background-color: #00966C; /* grove */
+    color: white;
+}
+
+tr.missing {
+    background-color: #A50034; /* chapman red */
+    color: white;
+}
+
+/* Modal */
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+div.modal-body {
+    text-align: center;
+}
+
+div.modal-content-box {
+    display: inline-block;
+    vertical-align: top;
 }
