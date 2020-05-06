@@ -69,10 +69,12 @@ function fnDisplayInformation(e) {
 }
 
 function fnTutorList(e) {
-    fnCreateLoadingScreen('modal-content-left', `Loading...'`);
-    $("#tutoring-modal").show();
-    var tutorInfo = e[0].innerText.match(/\S+/g)
+    clearModal(false);
+    fnCreateLoadingScreen('m_info-content-left', `Loading...'`);
+    $("#m_info").show();
+    var tutorInfo = fnGetTextFromRow(e);
     var studentID = tutorInfo[0];
+    // console.log(tutorInfo)
 
     var sp_single_tutor_info = `call sp_classes_by_tutor(${studentID});`;
     fnRunQuery(sp_single_tutor_info, fnPopulateTutorClasses, tutorInfo);
@@ -83,10 +85,21 @@ function fnTutorList(e) {
 }
 
 function fnClassList(e) {
-    $("#tutoring-modal").show();
+    fnGetTextFromRow(e);
+    $("#m_info").show();
     var classID = e[0].innerText.match(/^[a-zA-Z]+\s[0-9]+L?/g)[0];
 
-    $("#modal-content-left").html(`<p>${classID}</p>`);
+    $("#m_info-content-left").html(`<p>${classID}</p>`);
+    fnClassClicked(e);
+}
+
+function fnGetTextFromRow(e) {
+    var res = e.find("th");
+    var info = []
+    for (var i = 0; i < res.length; i++) {
+        info.push(res[i].innerText);
+    }
+    return info;
 }
 
 function fnPopulateTutorClasses(lstData, lstColNames, lstName) {
@@ -98,15 +111,15 @@ function fnPopulateTutorClasses(lstData, lstColNames, lstName) {
     // Create a stored procedure to get the tutor's current table
     // sp_get_tutor_table
 
-    $('#modal-title').text(`${fn} ${ln} - ${status}`);
-    $('#modal-title-left').text('Classes');
-    fnFillData(lstData, lstColNames, 'modal-content-left');
+    $('#m_info-title').text(`${fn} ${ln} - ${status}`);
+    $('#m_info-title-left').text('Classes');
+    fnFillData(lstData, lstColNames, ['m_info-content-left', fnClassClicked]);
 }
 
 
 function fnPopulateTutorSchedule(lstData, lstColNames) {
-    $('#modal-title-right').text('Schedule');
-    fnFillData(lstData, lstColNames, 'modal-content-right');
+    $('#m_info-title-right').text('Schedule');
+    fnFillData(lstData, lstColNames, 'm_info-content-right');
 
     var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
                    "Friday", "Saturday"]
@@ -118,7 +131,7 @@ function fnPopulateTutorSchedule(lstData, lstColNames) {
     if(day_result.length > 0) {
         var target = day_result[day_result.length-2];
 
-        if($('#modal-title').text().includes("In"))
+        if($('#m_info-title').text().includes("In"))
             $(target).addClass('selected');
         else
             $(target).addClass('missing');

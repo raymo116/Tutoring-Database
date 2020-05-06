@@ -25,8 +25,10 @@
             var CONNECTION;
             var DATA;
 
-            var GET_TUTORS_IN = 'call sp_get_tutors_in_info(null);';
+            var GET_ALL_TUTORS_IN = 'call sp_get_tutors_in_info(null, null);';
+            var GET_TUTORS_IN_FOR_CLASS = 'call sp_get_tutors_in_info(null, ?);';
             var GET_CLASSES_TUTORED = 'call sp_get_classes_tutored();'
+            var GET_TUTORS_FOR_SUBJECT = "call sp_get_tutors_for_subject(?);"
 
 
             fs.readFile('./con.data', 'utf8', (err, data) => {
@@ -46,16 +48,15 @@
             $(document).ready(function() {
                 $('#tutor_list').click(function() {
                     fnCreateLoadingScreen('info-grid', 'Loading Tutor Data');
-                    fnRunQuery(GET_TUTORS_IN, fnFillData, fnTutorList, 'info-grid');
+                    fnRunQuery(GET_ALL_TUTORS_IN, fnFillData, fnTutorList, 'info-grid');
                     $('#table-header')[0].innerHTML = "Tutors"
                 });
 
                 $('#class_list').click(function() {
                     fnCreateLoadingScreen('info-grid', 'Loading Class Data');
-                    fnRunQuery(GET_CLASSES_TUTORED, fnFillData, fnClassList, 'info-grid');
+                    fnRunQuery(GET_CLASSES_TUTORED, fnFillData, fnClassClicked, 'info-grid');
                     $('#table-header')[0].innerHTML = "Classes"
                 });
-
 
             });
 
@@ -87,7 +88,7 @@
                     if (err) throw err;
 
                     // If it's a stored procedure, it has to act slightly differently
-                    if(/^call [a-z_0-9]+\(.*\);$/.test(strQuery))
+                    if(/^call [A-Za-z_0-9]+\(.*\);$/.test(strQuery))
                         rows = rows[0];
 
                     fncallback(rows, fields, rest);
@@ -101,14 +102,16 @@
                     console.log.apply(console, arguments);
                 }
             }
+
         </script>
 
         <script type="text/javascript">
             function fnEnterNum(item) {
                 if(item.name == "clear") $("#id_login")[0].value = "";
                 else if(item.name == "enter") {
+                    var temp = $("#id_login")[0].value;
                     $("#id_login")[0].value = "";
-                    fnIDEntered();
+                    // fnClassClicked(temp);
                 }
                 else if ($("#id_login")[0].value.length < 9){
                     $("#id_login")[0].value += item.innerHTML;
@@ -118,8 +121,18 @@
                 }
             }
 
-            function fnIDEntered() {
-                console.log("Entering...");
+            function fnClassClicked(e) {
+                clearModal(false);
+                fnCreateLoadingScreen('m_info-content-right', 'Loading Class Data');
+                $("#m_info").show();
+                var classID = e[0].innerText.match(/^[a-zA-Z]+\s[0-9]+L?/g)[0];
+
+
+
+                // Need to figure out how to escape characters
+                var query = mysql.format(GET_TUTORS_IN_FOR_CLASS, [classID])
+                $('#m_info-title').text(`Tutors for ${classID}`);
+                fnRunQuery(query, fnFillData, fnTutorList, 'm_info-content-right');
             }
         </script>
         <!-- <h1>Student Information</h1>
@@ -132,27 +145,29 @@
         </div>
         <div class="main-screen-container">
             <div class="login-buttons">
-                <!-- Log in -->
-                <h2>Manual Login</h2>
-                <input type="number" id="id_login" name="id_login" value="">
-                <br/>
+                <div style="display:none;">
+                    <!-- Log in -->
+                    <h2>Manual Login</h2>
+                    <input type="number" id="id_login" name="id_login" value="">
+                    <br/>
 
-                <button type="button" onclick="fnEnterNum(this);" name="one" class="white">1</button>
-                <button type="button" onclick="fnEnterNum(this);"name="two" class="white">2</button>
-                <button type="button" onclick="fnEnterNum(this);"name="three" class="white">3</button>
-                <br/>
-                <button type="button" onclick="fnEnterNum(this);"name="four" class="white">4</button>
-                <button type="button" onclick="fnEnterNum(this);"name="five" class="white">5</button>
-                <button type="button" onclick="fnEnterNum(this);"name="six" class="white">6</button>
-                <br/>
-                <button type="button" onclick="fnEnterNum(this);"name="seven" class="white">7</button>
-                <button type="button" onclick="fnEnterNum(this);"name="eight" class="white">8</button>
-                <button type="button" onclick="fnEnterNum(this);"name="nine" class="white">9</button>
-                <br/>
-                <button type="button" onclick="fnEnterNum(this);"name="clear" class="clear">X</button>
-                <button type="button" onclick="fnEnterNum(this);"name="zero" class="white">0</button>
-                <button type="button" onclick="fnEnterNum(this);"name="enter" class="enter">✓</button>
-                <br/>
+                    <button type="button" onclick="fnEnterNum(this);" name="one" class="white">1</button>
+                    <button type="button" onclick="fnEnterNum(this);"name="two" class="white">2</button>
+                    <button type="button" onclick="fnEnterNum(this);"name="three" class="white">3</button>
+                    <br/>
+                    <button type="button" onclick="fnEnterNum(this);"name="four" class="white">4</button>
+                    <button type="button" onclick="fnEnterNum(this);"name="five" class="white">5</button>
+                    <button type="button" onclick="fnEnterNum(this);"name="six" class="white">6</button>
+                    <br/>
+                    <button type="button" onclick="fnEnterNum(this);"name="seven" class="white">7</button>
+                    <button type="button" onclick="fnEnterNum(this);"name="eight" class="white">8</button>
+                    <button type="button" onclick="fnEnterNum(this);"name="nine" class="white">9</button>
+                    <br/>
+                    <button type="button" onclick="fnEnterNum(this);"name="clear" class="clear">X</button>
+                    <button type="button" onclick="fnEnterNum(this);"name="zero" class="white">0</button>
+                    <button type="button" onclick="fnEnterNum(this);"name="enter" class="enter">✓</button>
+                    <br/>
+                </div>
 
                 <!-- Info -->
                 <button type="button" id="tutor_list" name="tutor_list" class="normal">Tutor List</button>

@@ -1,30 +1,35 @@
 <script type="text/javascript">
-    $("#exit-button").click(function() {
-        $("#tutoring-modal").hide();
-        $("#modal-title-left").text("");
-        $("#modal-title-right").text("");
-        $("#modal-content-left").html("");
-        $("#modal-content-right").html("");
+    $("#m_info_exit").click(function() {
+        clearModal(true);
     });
+
+    function clearModal(hide) {
+        if(hide) $("#m_info").hide();
+        $("#m_info-title").text("");
+        $("#m_info-title-left").text("");
+        $("#m_info-title-right").text("");
+        $("#m_info-content-left").html("");
+        $("#m_info-content-right").html("");
+    }
 </script>
 
 <!-- The Modal -->
-<div id="tutoring-modal" class="modal">
+<div id="m_info" class="modal">
 
     <!-- Modal content -->
     <div class="modal-content">
-        <span class="close" id="exit-button">&times;</span>
+        <span class="close" id="m_info_exit">&times;</span>
         <div class="modal-body">
-            <h2 id="modal-title"></h2>
+            <h2 id="m_info-title"></h2>
             <div class="modal-content-box">
-                <h3 id="modal-title-left"></h3>
-                <div id="modal-content-left" class="table-container">
+                <h3 id="m_info-title-left"></h3>
+                <div id="m_info-content-left" class="table-container">
 
                 </div>
             </div>
             <div class="modal-content-box">
-                <h3 id="modal-title-right"></h3>
-                <div id="modal-content-right" class="table-container">
+                <h3 id="m_info-title-right"></h3>
+                <div id="m_info-content-right" class="table-container">
                 </div>
 
             </div>
