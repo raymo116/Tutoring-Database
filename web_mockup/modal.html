@@ -1,9 +1,9 @@
 <script type="text/javascript">
     $("#m_info_exit").click(function() {
-        clearModal(true);
+        clearInfoModal(true);
     });
 
-    function clearModal(hide) {
+    function clearInfoModal(hide) {
         if(hide) $("#m_info").hide();
         $("#m_info-title").text("");
         $("#m_info-title-left").text("");
@@ -11,9 +11,32 @@
         $("#m_info-content-left").html("");
         $("#m_info-content-right").html("");
     }
+
+    $("#m_login_exit").click(function() {
+        clearloginModal(true);
+    });
+
+    function clearloginModal(hide) {
+        if(hide) $("#m_login").hide();
+
+        $('#choose_tutor').show();
+        $('#num_pad').hide();
+        $('#btn_select').show();
+
+        $("#m_login-title").text("");
+        $("#m_info-content").text("");
+
+        SELECTED_TUTOR = null;
+    }
+
+    $('#btn_select').click(function() {
+        if (SELECTED_TUTOR != null) {
+            fnLogin();
+        } else alert('You need to select a tutor');
+    });
 </script>
 
-<!-- The Modal -->
+<!-- Class/Tutor Modal -->
 <div id="m_info" class="modal">
 
     <!-- Modal content -->
@@ -36,4 +59,44 @@
         </div>
     </div>
 
+</div>
+
+<!-- Log-in Modal -->
+<div id="m_login" class="modal">
+
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close" id="m_login_exit">&times;</span>
+        <div id="choose_tutor" class="modal-body">
+            <h2 id="m_login-title"></h2>
+            <div class="table-container" id="m_info-content">
+            </div>
+        </div>
+        <button type="button" id="btn_select" name="btn_select" class="normal">Select</button>
+
+        <div id="num_pad">
+            <!-- Log in -->
+            <h2>Manual Login</h2>
+            <input type="number" id="id_login" name="id_login" value="">
+            <br/>
+
+            <button type="button" onclick="fnEnterNum(this);" name="one" class="white">1</button>
+            <button type="button" onclick="fnEnterNum(this);"name="two" class="white">2</button>
+            <button type="button" onclick="fnEnterNum(this);"name="three" class="white">3</button>
+            <br/>
+            <button type="button" onclick="fnEnterNum(this);"name="four" class="white">4</button>
+            <button type="button" onclick="fnEnterNum(this);"name="five" class="white">5</button>
+            <button type="button" onclick="fnEnterNum(this);"name="six" class="white">6</button>
+            <br/>
+            <button type="button" onclick="fnEnterNum(this);"name="seven" class="white">7</button>
+            <button type="button" onclick="fnEnterNum(this);"name="eight" class="white">8</button>
+            <button type="button" onclick="fnEnterNum(this);"name="nine" class="white">9</button>
+            <br/>
+            <button type="button" onclick="fnEnterNum(this);"name="clear" class="clear">X</button>
+            <button type="button" onclick="fnEnterNum(this);"name="zero" class="white">0</button>
+            <button type="button" onclick="fnEnterNum(this);"name="enter" class="enter">✓</button>
+            <br/>
+        </div>
+    </div>
+    </div>
 </div>

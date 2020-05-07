@@ -69,7 +69,7 @@ function fnDisplayInformation(e) {
 }
 
 function fnTutorList(e) {
-    clearModal(false);
+    clearInfoModal(false);
     fnCreateLoadingScreen('m_info-content-left', `Loading...'`);
     $("#m_info").show();
     var tutorInfo = fnGetTextFromRow(e);
@@ -136,4 +136,10 @@ function fnPopulateTutorSchedule(lstData, lstColNames) {
         else
             $(target).addClass('missing');
     }
+}
+
+function fnLogin() {
+    $('#choose_tutor').hide();
+    $('#btn_select').hide();
+    $('#num_pad').show();
 }

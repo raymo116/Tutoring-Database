@@ -218,6 +218,7 @@ tr.missing {
   padding: 20px;
   border: 1px solid #888;
   width: 80%; /* Could be more or less, depending on screen size */
+  text-align: center;
 }
 
 /* The Close Button */
@@ -242,4 +243,19 @@ div.modal-body {
 div.modal-content-box {
     display: inline-block;
     vertical-align: top;
+}
+
+#num_pad {
+    display:none;
+}
+
+.warning {
+  animation: blinker 0.25s linear;
+}
+
+@keyframes blinker {
+  0% {
+    /* background-color: #A50034; */
+    background-color: rgba(165,0,52, .5);
+  }
 }

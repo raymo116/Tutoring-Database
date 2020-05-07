@@ -25,10 +25,13 @@
             var CONNECTION;
             var DATA;
 
-            var GET_ALL_TUTORS_IN = 'call sp_get_tutors_in_info(null, null);';
+            var GET_ALL_TUTORS_INFO = 'call sp_get_tutors_in_info(null, null);';
             var GET_TUTORS_IN_FOR_CLASS = 'call sp_get_tutors_in_info(null, ?);';
             var GET_CLASSES_TUTORED = 'call sp_get_classes_tutored();'
             var GET_TUTORS_FOR_SUBJECT = "call sp_get_tutors_for_subject(?);"
+            var GET_TUTORS_IN = "call sp_get_tutors_in(null);"
+
+            var SELECTED_TUTOR = null;
 
 
             fs.readFile('./con.data', 'utf8', (err, data) => {
@@ -48,7 +51,7 @@
             $(document).ready(function() {
                 $('#tutor_list').click(function() {
                     fnCreateLoadingScreen('info-grid', 'Loading Tutor Data');
-                    fnRunQuery(GET_ALL_TUTORS_IN, fnFillData, fnTutorList, 'info-grid');
+                    fnRunQuery(GET_ALL_TUTORS_INFO, fnFillData, fnTutorList, 'info-grid');
                     $('#table-header')[0].innerHTML = "Tutors"
                 });
 
@@ -58,7 +61,21 @@
                     $('#table-header')[0].innerHTML = "Classes"
                 });
 
+                $('#check_in_list').click(function() {
+                    $("#m_login").show();
+                    fnCreateLoadingScreen('m_info-content', 'Finding Tutors');
+                    fnRunQuery(GET_TUTORS_IN, fnFillData, fnSelectTutor, 'm_info-content');
+                    $('#m_login-title')[0].innerHTML = "Tutors In"
+                });
+
             });
+
+            function fnSelectTutor(e) {
+                if(SELECTED_TUTOR != fnGetTextFromRow(e)[0])
+                    SELECTED_TUTOR = fnGetTextFromRow(e)[0];
+                else
+                    SELECTED_TUTOR = null;
+            }
 
             $(function(){
                 $("#modal-container").load("./modal.html");
@@ -109,25 +126,48 @@
             function fnEnterNum(item) {
                 if(item.name == "clear") $("#id_login")[0].value = "";
                 else if(item.name == "enter") {
+                    if($("#id_login")[0].value.length == 0) {
+                        fnFlash();
+                        return;
+                    }
                     var temp = $("#id_login")[0].value;
                     $("#id_login")[0].value = "";
-                    // fnClassClicked(temp);
+
+                    var CHECK_IN_STUDENT = `call sp_student_in(${SELECTED_TUTOR},${temp},null);`;
+                    // var query = mysql.format(CHECK_IN_STUDENT, [, temp]);
+
+                    fnRunQuery(CHECK_IN_STUDENT, function(...rest){
+                        console.log();
+                        if(rest[0][0]['Output'] === -1) {
+                            fnFlash();
+                        } else {
+                            clearloginModal(true);
+                        }
+                    });
+
+                    console.log(temp);
                 }
                 else if ($("#id_login")[0].value.length < 9){
                     $("#id_login")[0].value += item.innerHTML;
                 }
                 else {
-                    console.log("flashing thing here...");
+                    fnFlash();
                 }
             }
 
+            function fnFlash() {
+                $("#id_login").addClass('warning');
+                setTimeout(function() {
+                    $("#id_login").removeClass("warning");
+                }, 250);
+                // alert("That was an invalid id number.\nPlease try again");
+            }
+
             function fnClassClicked(e) {
-                clearModal(false);
+                clearInfoModal(false);
                 fnCreateLoadingScreen('m_info-content-right', 'Loading Class Data');
                 $("#m_info").show();
                 var classID = e[0].innerText.match(/^[a-zA-Z]+\s[0-9]+L?/g)[0];
-
-
 
                 // Need to figure out how to escape characters
                 var query = mysql.format(GET_TUTORS_IN_FOR_CLASS, [classID])
@@ -145,34 +185,12 @@
         </div>
         <div class="main-screen-container">
             <div class="login-buttons">
-                <div style="display:none;">
-                    <!-- Log in -->
-                    <h2>Manual Login</h2>
-                    <input type="number" id="id_login" name="id_login" value="">
-                    <br/>
-
-                    <button type="button" onclick="fnEnterNum(this);" name="one" class="white">1</button>
-                    <button type="button" onclick="fnEnterNum(this);"name="two" class="white">2</button>
-                    <button type="button" onclick="fnEnterNum(this);"name="three" class="white">3</button>
-                    <br/>
-                    <button type="button" onclick="fnEnterNum(this);"name="four" class="white">4</button>
-                    <button type="button" onclick="fnEnterNum(this);"name="five" class="white">5</button>
-                    <button type="button" onclick="fnEnterNum(this);"name="six" class="white">6</button>
-                    <br/>
-                    <button type="button" onclick="fnEnterNum(this);"name="seven" class="white">7</button>
-                    <button type="button" onclick="fnEnterNum(this);"name="eight" class="white">8</button>
-                    <button type="button" onclick="fnEnterNum(this);"name="nine" class="white">9</button>
-                    <br/>
-                    <button type="button" onclick="fnEnterNum(this);"name="clear" class="clear">X</button>
-                    <button type="button" onclick="fnEnterNum(this);"name="zero" class="white">0</button>
-                    <button type="button" onclick="fnEnterNum(this);"name="enter" class="enter">✓</button>
-                    <br/>
-                </div>
-
                 <!-- Info -->
                 <button type="button" id="tutor_list" name="tutor_list" class="normal">Tutor List</button>
                 <br/>
                 <button type="button" id="class_list" name="class_list" class="normal">Class List</button>
+                <br/>
+                <button type="button" id="check_in_list" name="avail_tut_list" class="normal">Check In</button>
             </div>
             <div class="info-panel">
                 <h1 id="table-header"></h1>
