@@ -31,7 +31,7 @@
             var GET_TUTORS_FOR_SUBJECT = "call sp_get_tutors_for_subject(?);"
             var GET_TUTORS_IN = "call sp_get_tutors_in(null);"
 
-            var SELECTED_TUTOR = null;
+            var SELECTED_TUTOR_ID = null;
 
 
             fs.readFile('./con.data', 'utf8', (err, data) => {
@@ -71,10 +71,10 @@
             });
 
             function fnSelectTutor(e) {
-                if(SELECTED_TUTOR != fnGetTextFromRow(e)[0])
-                    SELECTED_TUTOR = fnGetTextFromRow(e)[0];
+                if(SELECTED_TUTOR_ID != fnGetTextFromRow(e)[0])
+                    SELECTED_TUTOR_ID = fnGetTextFromRow(e)[0];
                 else
-                    SELECTED_TUTOR = null;
+                    SELECTED_TUTOR_ID = null;
             }
 
             $(function(){
@@ -133,19 +133,31 @@
                     var temp = $("#id_login")[0].value;
                     $("#id_login")[0].value = "";
 
-                    var CHECK_IN_STUDENT = `call sp_student_in(${SELECTED_TUTOR},${temp},null);`;
-                    // var query = mysql.format(CHECK_IN_STUDENT, [, temp]);
+                    var VALID_STUDENT = `call sp_valid_stud_and_check_io(${temp});`;
 
-                    fnRunQuery(CHECK_IN_STUDENT, function(...rest){
-                        console.log();
-                        if(rest[0][0]['Output'] === -1) {
-                            fnFlash();
-                        } else {
-                            clearloginModal(true);
+                    fnRunQuery(VALID_STUDENT, function(...rest){
+                        console.log(rest[0][0]['Output']);
+                        switch (rest[0][0]['Output']) {
+                            case 'COUT':
+                                clearloginModal(true);
+                                alert("You have successfully been checked out");
+                                break;
+                            case 'STDT':
+                                STUDENT_ID = temp;
+                                chooseTutorLayout();
+                                break;
+                            case 'BADD':
+                                fnFlash();
+                                break;
+                            case 'TUTR':
+                                alert("Yer a tutor harry!");
+                                // Do tutory stuff here
+                                break;
+                            default:
+                                fnFlash();
+                                console.log(rest[0][0]['Output']);
                         }
                     });
-
-                    console.log(temp);
                 }
                 else if ($("#id_login")[0].value.length < 9){
                     $("#id_login")[0].value += item.innerHTML;
