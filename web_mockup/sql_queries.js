@@ -1,3 +1,5 @@
+// All of the stored procedures from the TutoringDatabase that we use 
+
 var SP_GET_ALL_TUTORS_INFO = `call sp_get_tutors_in_info(null, null);`;
 var SP_GET_CLASSES_TUTORED = `call sp_get_tutors_in_info(null, '?');`;
 var SP_GET_CLASSES_TUTORED = `call sp_get_classes_tutored();`;

@@ -34,25 +34,30 @@
 
         <!-- initial setup -->
         <script type="text/javascript">
+            // Sets up the buttons
             $(document).ready(fnSetupNavigationButtons);
-            
+
+            // Loads the modal html
             $(function(){
                 $("#modal-container").load("./modal.html");
             });
         </script>
 
+        <!-- Main Header -->
         <div class="main-title">
             <h1 class="main-title">Tutoring Database</h1>
         </div>
+
         <div class="main-screen-container">
             <div class="login-buttons">
-                <!-- Info -->
+                <!-- Navigation bar for the window -->
                 <button type="button" id="tutor_list" name="tutor_list" class="normal">Tutor List</button>
                 <br/>
                 <button type="button" id="class_list" name="class_list" class="normal">Class List</button>
                 <br/>
                 <button type="button" id="check_in_list" name="avail_tut_list" class="normal">Check In</button>
             </div>
+            <!-- The pannel where all of the data will show up -->
             <div class="info-panel">
                 <h1 id="table-header"></h1>
                 <div id='info-grid' class="table-container">
