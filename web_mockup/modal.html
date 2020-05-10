@@ -16,12 +16,61 @@
         clearloginModal(true);
     });
 
+    $("#tutor").click(function() {
+        alert("Logging in as a tutor");
+        chooseTableLayout();
+    });
+
+    $("#tutee").click(function() {
+        alert("Logging in as a tutee");
+        chooseTutorLayout();
+    });
+
+    function chooseTableLayout() {
+        $('#choose_tutor').hide();
+        $('#tutor-login').hide();
+        $('#num_pad').hide();
+        $('#btn_select').hide();
+        $('#choose-table').show();
+        $('#table-select').show();
+
+        var FIND_OPEN_TABLES = 'call sp_get_open_tables();';
+
+        fnRunQuery(FIND_OPEN_TABLES, fnFillData, fnChooseTable, "open-tables");
+    }
+
+    function fnChooseTable(e) {
+        if(e.hasClass("selected")) {
+            $('#table-select').click(function() {
+                    var table = e[0].innerText;
+                    var d = getDateTime();
+                    var TUTOR_IN = `call sp_tutor_in('${d}', ${STUDENT_ID}, ${table});`;
+
+                    fnRunQuery(TUTOR_IN, function(...rest){
+                        clearloginModal(true);
+                        console.log(rest);
+                        alert("You are checked in to tutor");
+                    });
+                });
+        } else {
+            $('#table-select').click(function() {
+                    alert("You need to select a table");
+                });
+        }
+    }
+
+    function getDateTime() {
+        return new Date().toISOString().slice(0, 19).replace('T', ' ');
+    }
+
     function clearloginModal(hide) {
         if(hide) $("#m_login").hide();
 
         $('#num_pad').show();
         $('#choose_tutor').hide();
         $('#btn_select').hide();
+        $('#tutor-login').hide();
+        $('#choose-table').hide();
 
         $("#m_login-title").text("");
         $("#m_info-content").text("");
@@ -34,8 +83,18 @@
         $('#num_pad').hide();
         $('#choose_tutor').show();
         $('#btn_select').show();
+        $('#tutor-login').hide();
+        $('#choose-table').hide();
 
-        $("#m_login-title").text("Testing");
+        $("#m_login-title").text("Chose a tutor");
+    }
+
+    function tutorCheckinLayout() {
+        $('#num_pad').hide();
+        $('#choose_tutor').hide();
+        $('#btn_select').hide();
+        $('#tutor-login').show();
+        $('#choose-table').hide();
     }
 
     $('#btn_select').click(function() {
@@ -115,6 +174,23 @@
             <button type="button" onclick="fnEnterNum(this);"name="zero" class="white">0</button>
             <button type="button" onclick="fnEnterNum(this);"name="enter" class="enter">✓</button>
             <br/>
+        </div>
+
+        <div id="tutor-login">
+            <h2>Logging in as...</h2>
+            <button type="button" id="tutor" name="tutor" class="normal">Tutor</button>
+            <br/>
+            <button type="button" id="tutee" name="tutee" class="normal">Tutee</button>
+        </div>
+
+        <div id="choose-table">
+            <h2>Choose an Open Table</h2>
+            <div class="table-container" id="open-tables"></div>
+            <br/>
+            <!-- Need to impliment editing login times eventually -->
+            <!-- <input type="datetime" id="select-time" name="select-time" value="">
+            <br/> -->
+            <button type="button" id="table-select" name="table-select" class="normal">Select</button>
         </div>
     </div>
     </div>

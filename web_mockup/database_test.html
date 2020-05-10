@@ -133,31 +133,9 @@
                     var temp = $("#id_login")[0].value;
                     $("#id_login")[0].value = "";
 
-                    var VALID_STUDENT = `call sp_valid_stud_and_check_io(${temp});`;
+                    var VALID_STUDENT = `call sp_new_valid_stud_and_check_io(${temp});`;
 
-                    fnRunQuery(VALID_STUDENT, function(...rest){
-                        console.log(rest[0][0]['Output']);
-                        switch (rest[0][0]['Output']) {
-                            case 'COUT':
-                                clearloginModal(true);
-                                alert("You have successfully been checked out");
-                                break;
-                            case 'STDT':
-                                STUDENT_ID = temp;
-                                chooseTutorLayout();
-                                break;
-                            case 'BADD':
-                                fnFlash();
-                                break;
-                            case 'TUTR':
-                                alert("Yer a tutor harry!");
-                                // Do tutory stuff here
-                                break;
-                            default:
-                                fnFlash();
-                                console.log(rest[0][0]['Output']);
-                        }
-                    });
+                    fnRunQuery(VALID_STUDENT, fnProcessLogin);
                 }
                 else if ($("#id_login")[0].value.length < 9){
                     $("#id_login")[0].value += item.innerHTML;
@@ -165,6 +143,38 @@
                 else {
                     fnFlash();
                 }
+            }
+
+            function fnProcessLogin(...rest){
+                console.log(rest[0][0]['Output']);
+                switch (rest[0][0]['Output']) {
+                    case 'TOUT':
+                        clearloginModal(true);
+                        alert("You have ended your shift as a tutor");
+                        break;
+                    case 'SOUT':
+                        clearloginModal(true);
+                        alert("You have successfully been checked out of your tutoring session");
+                        break;
+                    case 'STDT':
+                        STUDENT_ID = temp;
+                        chooseTutorLayout();
+                        break;
+                    case 'BADD':
+                        fnFlash();
+                        break;
+                    case 'TUTR':
+                        STUDENT_ID = temp;
+                        fnTutorLogin();
+                        break;
+                    default:
+                        fnFlash();
+                        console.log(rest[0][0]['Output']);
+                }
+            }
+
+            function fnTutorLogin() {
+                tutorCheckinLayout();
             }
 
             function fnFlash() {
