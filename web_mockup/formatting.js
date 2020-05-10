@@ -74,14 +74,12 @@ function fnTutorList(e) {
     $("#m_info").show();
     var tutorInfo = fnGetTextFromRow(e);
     var studentID = tutorInfo[0];
-    // console.log(tutorInfo)
 
-    var sp_single_tutor_info = `call sp_classes_by_tutor(${studentID});`;
-    fnRunQuery(sp_single_tutor_info, fnPopulateTutorClasses, tutorInfo);
+    var query1 = mysql.format(SP_CLASSES_BY_TUTOR,[studentID]);
+    fnRunQuery(query1, fnPopulateTutorClasses, tutorInfo);
 
-
-    var sp_get_single_tutor_schedule = `call sp_get_single_tutor_schedule(${studentID});`;
-    fnRunQuery(sp_get_single_tutor_schedule, fnPopulateTutorSchedule);
+    var query2 = mysql.format(SP_GET_SINGLE_TUTOR_SCHEDULE,[studentID]);
+    fnRunQuery(query2, fnPopulateTutorSchedule);
 }
 
 function fnClassList(e) {
@@ -108,14 +106,10 @@ function fnPopulateTutorClasses(lstData, lstColNames, lstName) {
     var ln = lstName[0][2];
     var status = lstName[0][3];
 
-    // Create a stored procedure to get the tutor's current table
-    // sp_get_tutor_table
-
     $('#m_info-title').text(`${fn} ${ln} - ${status}`);
     $('#m_info-title-left').text('Classes');
     fnFillData(lstData, lstColNames, ['m_info-content-left', fnClassClicked]);
 }
-
 
 function fnPopulateTutorSchedule(lstData, lstColNames) {
     $('#m_info-title-right').text('Schedule');

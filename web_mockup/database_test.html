@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Hello World!</title>
+        <title>Tutoring Database</title>
         <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
         <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 
@@ -14,193 +14,32 @@
         <!--    -->
 
         <!-- Scripts -->
+        <script src="database_test.js"></script>
+        <script src="sql_queries.js"></script>
         <script src="formatting.js"></script>
+        <script src="connection.js"></script>
+        <script src="modal.js"></script>
     </head>
     <body>
+        <!-- Requirements -->
         <script type="text/javascript">
             var mysql = require('mysql');
-            const fs = require('fs');
+            // const fs = require('fs');
+        </script>
 
-            var IP_ADDRESS, USER, PASSWORD, DATABASE_NAME;
-            var CONNECTION;
-            var DATA;
+        <!-- Constants -->
+        <script type="text/javascript">
+        var SELECTED_TUTOR_ID = null;
+        </script>
 
-            var GET_ALL_TUTORS_INFO = 'call sp_get_tutors_in_info(null, null);';
-            var GET_TUTORS_IN_FOR_CLASS = 'call sp_get_tutors_in_info(null, ?);';
-            var GET_CLASSES_TUTORED = 'call sp_get_classes_tutored();'
-            var GET_TUTORS_FOR_SUBJECT = "call sp_get_tutors_for_subject(?);"
-            var GET_TUTORS_IN = "call sp_get_tutors_in(null);"
-
-            var SELECTED_TUTOR_ID = null;
-
-
-            fs.readFile('./con.data', 'utf8', (err, data) => {
-                if (err) {
-                    console.error(err)
-                    return
-                }
-
-                data = data.split(/\r?\n/);
-
-                IP_ADDRESS = data[0];
-                USER = data[1];
-                PASSWORD = data[2];
-                DATABASE_NAME = data[3];
-            });
-
-            $(document).ready(function() {
-                $('#tutor_list').click(function() {
-                    fnCreateLoadingScreen('info-grid', 'Loading Tutor Data');
-                    fnRunQuery(GET_ALL_TUTORS_INFO, fnFillData, fnTutorList, 'info-grid');
-                    $('#table-header')[0].innerHTML = "Tutors"
-                });
-
-                $('#class_list').click(function() {
-                    fnCreateLoadingScreen('info-grid', 'Loading Class Data');
-                    fnRunQuery(GET_CLASSES_TUTORED, fnFillData, fnClassClicked, 'info-grid');
-                    $('#table-header')[0].innerHTML = "Classes"
-                });
-
-                $('#check_in_list').click(function() {
-                    $("#m_login").show();
-                    fnCreateLoadingScreen('m_info-content', 'Finding Tutors');
-                    fnRunQuery(GET_TUTORS_IN, fnFillData, fnSelectTutor, 'm_info-content');
-                    $('#m_login-title')[0].innerHTML = "Tutors In"
-                });
-
-            });
-
-            function fnSelectTutor(e) {
-                if(SELECTED_TUTOR_ID != fnGetTextFromRow(e)[0])
-                    SELECTED_TUTOR_ID = fnGetTextFromRow(e)[0];
-                else
-                    SELECTED_TUTOR_ID = null;
-            }
-
+        <!-- initial setup -->
+        <script type="text/javascript">
+            $(document).ready(fnSetupNavigationButtons);
+            
             $(function(){
                 $("#modal-container").load("./modal.html");
             });
-
-            function fnCreateConnection() {
-                // Add the credentials to access your database
-                CONNECTION = mysql.createConnection({
-                    host     : IP_ADDRESS,
-                    user     : USER,
-                    password : PASSWORD,
-                    database : DATABASE_NAME
-                });
-
-                CONNECTION.connect();
-
-            }
-
-            function fnCloseConnection() {
-                CONNECTION.end();
-            }
-
-            function fnRunQuery(strQuery, fncallback, ...rest) {
-                fnCreateConnection();
-
-                CONNECTION.query(strQuery, function(err, rows, fields) {
-                    if (err) throw err;
-
-                    // If it's a stored procedure, it has to act slightly differently
-                    if(/^call [A-Za-z_0-9]+\(.*\);$/.test(strQuery))
-                        rows = rows[0];
-
-                    fncallback(rows, fields, rest);
-                });
-
-                fnCloseConnection();
-            }
-
-            function fnLog() {
-                if(typeof(console) !== 'undefined') {
-                    console.log.apply(console, arguments);
-                }
-            }
-
         </script>
-
-        <script type="text/javascript">
-            function fnEnterNum(item) {
-                if(item.name == "clear") $("#id_login")[0].value = "";
-                else if(item.name == "enter") {
-                    if($("#id_login")[0].value.length == 0) {
-                        fnFlash();
-                        return;
-                    }
-                    var temp = $("#id_login")[0].value;
-                    $("#id_login")[0].value = "";
-
-                    var VALID_STUDENT = `call sp_new_valid_stud_and_check_io(${temp});`;
-
-                    fnRunQuery(VALID_STUDENT, fnProcessLogin);
-                }
-                else if ($("#id_login")[0].value.length < 9){
-                    $("#id_login")[0].value += item.innerHTML;
-                }
-                else {
-                    fnFlash();
-                }
-            }
-
-            function fnProcessLogin(...rest){
-                console.log(rest[0][0]['Output']);
-                switch (rest[0][0]['Output']) {
-                    case 'TOUT':
-                        clearloginModal(true);
-                        alert("You have ended your shift as a tutor");
-                        break;
-                    case 'SOUT':
-                        clearloginModal(true);
-                        alert("You have successfully been checked out of your tutoring session");
-                        break;
-                    case 'STDT':
-                        STUDENT_ID = temp;
-                        chooseTutorLayout();
-                        break;
-                    case 'BADD':
-                        fnFlash();
-                        break;
-                    case 'TUTR':
-                        STUDENT_ID = temp;
-                        fnTutorLogin();
-                        break;
-                    default:
-                        fnFlash();
-                        console.log(rest[0][0]['Output']);
-                }
-            }
-
-            function fnTutorLogin() {
-                tutorCheckinLayout();
-            }
-
-            function fnFlash() {
-                $("#id_login").addClass('warning');
-                setTimeout(function() {
-                    $("#id_login").removeClass("warning");
-                }, 250);
-                // alert("That was an invalid id number.\nPlease try again");
-            }
-
-            function fnClassClicked(e) {
-                clearInfoModal(false);
-                fnCreateLoadingScreen('m_info-content-right', 'Loading Class Data');
-                $("#m_info").show();
-                var classID = e[0].innerText.match(/^[a-zA-Z]+\s[0-9]+L?/g)[0];
-
-                // Need to figure out how to escape characters
-                var query = mysql.format(GET_TUTORS_IN_FOR_CLASS, [classID])
-                $('#m_info-title').text(`Tutors for ${classID}`);
-                fnRunQuery(query, fnFillData, fnTutorList, 'm_info-content-right');
-            }
-        </script>
-        <!-- <h1>Student Information</h1>
-        <div id='grid1' class="table-container"></div>
-        <h1>Tutor Information</h1>
-        <div id='grid2' class="table-container"></div> -->
 
         <div class="main-title">
             <h1 class="main-title">Tutoring Database</h1>
