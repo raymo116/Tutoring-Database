@@ -47,7 +47,8 @@ function fnChooseTable(e) {
                 var d = getDateTime();
 
                 var query = mysql.format(SP_TUTOR_IN, [d, STUDENT_ID, table]);
-                fnRunQuery(TUTOR_IN, function(...rest){
+                console.log(query);
+                fnRunQuery(query, function(...rest){
                     clearloginModal(true);
                     console.log(rest);
                     alert("You are checked in to tutor");

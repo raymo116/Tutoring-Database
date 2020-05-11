@@ -30,6 +30,9 @@ function fnEnterNum(item) {
         var temp = $("#id_login")[0].value;
         $("#id_login")[0].value = "";
 
+        // This is bad and needs to be fixed eventually;
+        STUDENT_ID = temp;
+
         var query = mysql.format(SP_VALID_STUDENT, [temp]);
 
         fnRunQuery(query, fnProcessLogin);
@@ -48,25 +51,27 @@ function fnProcessLogin(...rest){
         case 'TOUT':
             clearloginModal(true);
             alert("You have ended your shift as a tutor");
+            STUDENT_ID = null;
             break;
         case 'SOUT':
             clearloginModal(true);
             alert("You have successfully been checked out of your tutoring session");
+            STUDENT_ID = null;
             break;
         case 'STDT':
-            STUDENT_ID = temp;
             chooseTutorLayout();
             break;
         case 'BADD':
             fnFlash();
+            STUDENT_ID = null;
             break;
         case 'TUTR':
-            STUDENT_ID = temp;
             fnTutorLogin();
             break;
         default:
             fnFlash();
             console.log(rest[0][0]['Output']);
+            STUDENT_ID = null;
     }
 }
 
