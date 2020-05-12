@@ -105,7 +105,7 @@ function fnSetTutor() {
                 alert("error");
                 console.log(rest);
             } else {
-                alert(`You have successfully logged in with ID# ${STUDENT_ID}.\nThis needs to be updated and replaced with something that's not ugly asf.`)
+                alert(`You have successfully logged in with ID# ${STUDENT_ID}.`)
                 clearloginModal(true);
             }
         });
