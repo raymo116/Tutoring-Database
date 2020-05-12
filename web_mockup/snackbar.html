@@ -1,0 +1,33 @@
+<script type="text/javascript">
+    var TIMEOUT = 500;
+
+    function fnShowSnackbar(strText, blGood = false, intDelayMs = 3000) {
+        // Add the "show" class
+        var sb = $("#snackbar");
+
+        fnResetSnackbar();
+        // This doesn't work for some reason...
+        clearTimeout(TIMEOUT);
+
+        sb.text(strText);
+
+        if(blGood == true) sb.addClass("good");
+        else sb.addClass("bad");
+
+        sb.addClass("show");
+
+        // After 3 seconds, remove the show class
+        TIMEOUT = setTimeout(function(){
+            fnResetSnackbar();
+        }, intDelayMs);
+    }
+
+    function fnResetSnackbar() {
+        var sb = $("#snackbar");
+        sb.removeClass("show");
+        if(sb.hasClass('good')) sb.removeClass('good');
+        else if (sb.hasClass('bad')) sb.removeClass('bad');
+    }
+</script>
+
+<div id="snackbar">Some text some message..</div>
