@@ -50,12 +50,14 @@ function fnProcessLogin(...rest){
     switch (rest[0][0]['Output']) {
         case 'TOUT':
             clearloginModal(true);
-            alert("You have ended your shift as a tutor");
+            // alert("You have ended your shift as a tutor");
+            fnShowSnackbar('You have ended your shift as a tutor', true);
             STUDENT_ID = null;
             break;
         case 'SOUT':
             clearloginModal(true);
-            alert("You have successfully been checked out of your tutoring session");
+            // alert("You have successfully been checked out of your tutoring session");
+            fnShowSnackbar('You have successfully been checked out of your tutoring session', true);
             STUDENT_ID = null;
             break;
         case 'STDT':

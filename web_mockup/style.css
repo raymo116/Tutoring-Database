@@ -245,7 +245,7 @@ tr.missing {
     height: fit-content;
     max-height: 50%;
     overflow: scroll;
-    /* width: 80%; /* Could be more or less, depending on screen size */ 
+    /* width: 80%; /* Could be more or less, depending on screen size */
     text-align: center;
 }
 
@@ -293,4 +293,61 @@ div.modal-content-box {
 
 #tutor-login, #choose-table {
     display: none;
+}
+
+/* Snackbar */
+
+/* The snackbar - position it at the bottom and in the middle of the screen */
+#snackbar {
+  visibility: hidden; /* Hidden by default. Visible on click */
+  min-width: 500px; /* Set a default minimum width */
+  margin-left: -250px; /* Divide value of min-width by 2 */
+  text-align: center; /* Centered text */
+  border-radius: 2px; /* Rounded borders */
+  padding: 16px; /* Padding */
+  position: fixed; /* Sit on top of the screen */
+  z-index: 1; /* Add a z-index if needed */
+  left: 50%; /* Center the snackbar */
+  top: 30px; /* 30px from the bottom */
+  box-shadow: 10px 10px 8px #000000;
+}
+
+#snackbar.good {
+    color: white;
+    background-color: #00966C; /* grove */
+}
+
+#snackbar.bad {
+    color: white;
+    background-color: #A50034; /* Chapman Red */
+}
+
+/* Show the snackbar when clicking on a button (class added with JavaScript) */
+#snackbar.show {
+  visibility: visible; /* Show the snackbar */
+  /* Add animation: Take 0.5 seconds to fade in and out the snackbar.
+  However, delay the fade out process for 2.5 seconds */
+  -webkit-animation: fadein 0.25s, fadeout 0.25s 2.75s;
+  animation: fadein 0.25s, fadeout 0.25s 2.75s;
+}
+
+/* Animations to fade the snackbar in and out */
+@-webkit-keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+  from {top: 0; opacity: 0;}
+  to {top: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+  from {top: 30px; opacity: 1;}
+  to {top: 0; opacity: 0;}
+}
+
+@keyframes fadeout {
+  from {top: 30px; opacity: 1;}
+  to {top: 0; opacity: 0;}
 }

@@ -49,12 +49,14 @@ function fnChooseTable(e) {
                 fnRunQuery(query, function(...rest){
                     clearloginModal(true);
                     console.log(rest);
-                    alert("You are checked in to tutor");
+                    // alert("You are checked in to tutor");
+                    fnShowSnackbar("You are checked in to tutor", true);
                 });
             });
     } else {
         $('#table-select').click(function() {
-                alert("You need to select a table");
+                // alert("You need to select a table");
+                fnShowSnackbar("You need to select a table", false);
             });
     }
 }
@@ -102,12 +104,15 @@ function fnSetTutor() {
         var query = mysql.format(SP_CHECK_IN_STUDENT, [SELECTED_TUTOR_ID, STUDENT_ID]);
         fnRunQuery(query, function(...rest){
             if(rest[0][0]['Output'] === -1) {
-                alert("error");
+                // alert("error");
+                fnShowSnackbar("error", false);
                 console.log(rest);
             } else {
-                alert(`You have successfully logged in with ID# ${STUDENT_ID}.`)
+                // alert(`You have successfully logged in with ID# ${STUDENT_ID}.`)
+                fnShowSnackbar(`You have successfully logged in with ID# ${STUDENT_ID}.`, true)
                 clearloginModal(true);
             }
         });
-    } else alert('You need to select a tutor');
+    // } else alert('You need to select a tutor');
+} else fnShowSnackbar('You need to select a tutor', false);
 }
