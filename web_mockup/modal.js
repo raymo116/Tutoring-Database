@@ -8,16 +8,14 @@ function fnInitialSetup() {
     });
 
     $("#tutor").click(function() {
-        alert("Logging in as a tutor");
         chooseTableLayout();
     });
 
     $("#tutee").click(function() {
-        alert("Logging in as a tutee");
         chooseTutorLayout();
     });
 
-    $('#btn_select').click(fnSelectTutor);
+    $('#btn_select').click(fnSetTutor);
 }
 
 function clearInfoModal(hide) {
@@ -99,7 +97,7 @@ function tutorCheckinLayout() {
     $('#choose-table').hide();
 }
 
-function fnSelectTutor() {
+function fnSetTutor() {
     if (SELECTED_TUTOR_ID != null) {
         var query = mysql.format(SP_CHECK_IN_STUDENT, [SELECTED_TUTOR_ID, STUDENT_ID]);
         fnRunQuery(query, function(...rest){

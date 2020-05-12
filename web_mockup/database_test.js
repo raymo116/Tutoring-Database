@@ -102,8 +102,8 @@ function fnTutorLogin() {
 
 // This should be cleaned up so it doesn't use global constants
 function fnSelectTutor(e) {
-    if(SELECTED_TUTOR_ID != fnGetTextFromRow(e)[0])
-        SELECTED_TUTOR_ID = fnGetTextFromRow(e)[0];
-    else
-        SELECTED_TUTOR_ID = null;
+     if(SELECTED_TUTOR_ID != fnGetTextFromRow(e)[0])
+         SELECTED_TUTOR_ID = fnGetTextFromRow(e)[0];
+     else
+         SELECTED_TUTOR_ID = null;
 }

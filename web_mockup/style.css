@@ -245,7 +245,7 @@ tr.missing {
     height: fit-content;
     max-height: 50%;
     overflow: scroll;
-    /* width: 80%; /* Could be more or less, depending on screen size */ */
+    /* width: 80%; /* Could be more or less, depending on screen size */ 
     text-align: center;
 }
 
