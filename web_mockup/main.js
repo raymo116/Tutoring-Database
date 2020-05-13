@@ -11,7 +11,7 @@ function createWindow () {
   })
 
   // and load the database_test.html of the app.
-  win.loadFile('database_test.html')
+  win.loadFile('./database_test.html')
 
   // Open the DevTools.
   win.webContents.openDevTools()
