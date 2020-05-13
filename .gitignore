@@ -3,3 +3,4 @@ DbConfig.py
 *.pyc
 con.data
 node_modules
+*.pptx

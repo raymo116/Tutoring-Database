@@ -14,16 +14,15 @@ function fnInitialSetup() {
     });
 
     $("#tutor").click(function() {
-        alert("Logging in as a tutor");
+        // console.log(STUDENT_ID);
         chooseTableLayout();
     });
 
     $("#tutee").click(function() {
-        alert("Logging in as a tutee");
         chooseTutorLayout();
     });
 
-    $('#btn_select').click(fnSelectTutor);
+    $('#btn_select').click(fnSetTutor);
 }
 
 // INITIAL SETUP ---------------------------------------------------------------
@@ -130,6 +129,8 @@ function chooseTableLayout() {
     $('#choose-table').show();
     $('#table-select').show();
 
+    console.log(STUDENT_ID);
+
     // Populate the list of tables
     // We'll want to update this to something prettier eventually
     fnRunQuery(SP_FIND_OPEN_TABLES, fnFillData, fnChooseTable, "open-tables");
@@ -137,6 +138,7 @@ function chooseTableLayout() {
 
 // Selects the current table
 function fnChooseTable(e) {
+    console.log(STUDENT_ID);
     // Checks to make sure that the row is selected
     if(e.hasClass("selected")) {
         // Set the onclick function to
@@ -150,14 +152,16 @@ function fnChooseTable(e) {
             // Check the tutor in
             fnRunQuery(query, function(...rest){
                 clearloginModal(true);
-                alert("You are checked in to tutor");
+                // alert("You are checked in to tutor");
+                fnShowSnackbar("You are checked in to tutor", true);
             });
         });
     } else {
         // Set the onclick function to alert them
         // ToDo: make this prettier
         $('#table-select').click(function() {
-                alert("You need to select a table");
+                fnShowSnackbar("You need to select a table", false);
+                // alert("You need to select a table");
             });
     }
 }
@@ -173,29 +177,32 @@ function getDateTime() {
 // SELECT A TUTOR --------------------------------------------------------------
 
 // This is the function that's called when a tutor is selected
-function fnSelectTutor() {
-    // Checks to make sure that a tutor is selected
-    if (SELECTED_TUTOR_ID != null) {
-        // Creates query
-        var query = mysql.format(SP_CHECK_IN_STUDENT, [SELECTED_TUTOR_ID, STUDENT_ID]);
-
-        // Runs the query
-        fnRunQuery(query, fnStudentLogInConfirmation);
-    } else alert('You need to select a tutor');
-}
+// function fnSelectTutor() {
+//     console.log("lala", STUDENT_ID);
+//     // Checks to make sure that a tutor is selected
+//     if (SELECTED_TUTOR_ID != null) {
+//         // Creates query
+//         var query = mysql.format(SP_CHECK_IN_STUDENT, [SELECTED_TUTOR_ID, STUDENT_ID]);
+//
+//         // Runs the query
+//         fnRunQuery(query, fnStudentLogInConfirmation);
+//     } else fnShowSnackbar('You need to select a tutor', false);
+    // } else alert('You need to select a tutor');
+// }
 
 // Lets the student know they have successfully logged in
 function fnStudentLogInConfirmation(...rest){
     if(rest[0][0]['Output'] === -1) {
         // ToDo: Need to make this error handling more bulletproof
-        alert("There was an error. Please try again.");
+        fnShowSnackbar("There was an error. Please try again.", false);
+        // alert("There was an error. Please try again.");
         console.log(rest);
     } else {
         // Lets the student know they have successfully logged in
         // ToDo: Need to make this less ugly
-        alert(`You have successfully logged in with ID# ${STUDENT_ID}.\n
+        fnShowSnackbar(`You have successfully logged in with ID# ${STUDENT_ID}.\n
             This needs to be updated and replaced with something that's
-            not ugly asf.`)
+            not ugly asf.`, true)
 
         // Reset the modal and hide it
         clearloginModal(true);
@@ -233,13 +240,15 @@ function fnSubmitID() {
     }
 
     // Gets the student ID
-    var temp = $("#id_login")[0].value;
+    // Need to replace this eventually
+    STUDENT_ID = $("#id_login")[0].value;
+    console.log(STUDENT_ID);
 
     // Clear the input
     $("#id_login")[0].value = "";
 
     // Checks to see if the name is valid
-    var query = mysql.format(SP_VALID_STUDENT, [temp]);
+    var query = mysql.format(SP_VALID_STUDENT, [STUDENT_ID]);
     fnRunQuery(query, fnProcessLogin);
 }
 
@@ -252,7 +261,8 @@ function fnProcessLogin(...rest){
             clearloginModal(true);
             // Lets them know they've checked out
             // ToDo: Need to make this prettier
-            alert("You have ended your shift as a tutor");
+            fnShowSnackbar("You have ended your shift as a tutor", true);
+            // alert("You have ended your shift as a tutor");
             break;
 
         // [S]tudent checking [OUT]
@@ -261,18 +271,19 @@ function fnProcessLogin(...rest){
             clearloginModal(true);
             // Lets them know they've checked out
             // ToDo: Need to make this prettier
-            alert("You have successfully been checked out of your tutoring session");
+            fnShowSnackbar("You have successfully been checked out of your tutoring session", true);
+            // alert("You have successfully been checked out of your tutoring session");
             break;
 
         // They are a [ST]u[D]en[T]
         case 'STDT':
-            STUDENT_ID = temp;
+            // STUDENT_ID = temp;
             chooseTutorLayout();
             break;
 
         // They are a [TUT]e[R]
         case 'TUTR':
-            STUDENT_ID = temp;
+            // STUDENT_ID = temp;
             fnTutorLogin();
             break;
 
@@ -347,6 +358,24 @@ function fnSelectTutor(e) {
         SELECTED_TUTOR_ID = fnGetTextFromRow(e)[0];
     else
         SELECTED_TUTOR_ID = null;
+}
+
+function fnSetTutor() {
+    if (SELECTED_TUTOR_ID != null) {
+        var query = mysql.format(SP_CHECK_IN_STUDENT, [SELECTED_TUTOR_ID, STUDENT_ID]);
+        fnRunQuery(query, function(...rest){
+            if(rest[0][0]['Output'] === -1) {
+                // alert("error");
+                fnShowSnackbar("error", false);
+                console.log(rest);
+            } else {
+                // alert(`You have successfully logged in with ID# ${STUDENT_ID}.`)
+                fnShowSnackbar(`You have successfully logged in with ID# ${STUDENT_ID}.`, true)
+                clearloginModal(true);
+            }
+        });
+    // } else alert('You need to select a tutor');
+    } else fnShowSnackbar('You need to select a tutor', false);
 }
 
 // END TUTOR SELECTION ---------------------------------------------------------

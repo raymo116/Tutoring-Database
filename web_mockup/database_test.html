@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Tutoring Database</title>
+        <title>Tutorly</title>
         <!-- https://electronjs.org/docs/tutorial/security#csp-meta-tag -->
         <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
 
@@ -40,12 +40,13 @@
             // Loads the modal html
             $(function(){
                 $("#modal-container").load("./modal.html");
+                $("#snackbar-container").load("./snackbar.html");
             });
         </script>
 
         <!-- Main Header -->
         <div class="main-title">
-            <h1 class="main-title">Tutoring Database</h1>
+            <h1 class="main-title">Tutorly</h1>
         </div>
 
         <div class="main-screen-container">
@@ -65,5 +66,6 @@
             </div>
         </div>
         <div id='modal-container'></div>
+        <div id='snackbar-container'></div>
     </body>
 </html>
