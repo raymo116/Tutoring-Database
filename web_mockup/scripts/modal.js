@@ -22,6 +22,10 @@ function fnInitialSetup() {
         chooseTutorLayout();
     });
 
+    $("#admin_close").click(function(){
+        clearManagmentModal(true);
+    });
+
     $('#btn_select').click(fnSetTutor);
 }
 
@@ -379,3 +383,53 @@ function fnSetTutor() {
 }
 
 // END TUTOR SELECTION ---------------------------------------------------------
+
+// BEGIN DATA MANAGMENT SECTION ------------------------------------------------
+
+function clearManagmentModal(hide) {
+    if (hide) {
+        $("#m_managment").hide();
+    }
+    $("#export-data").hide();
+    $("#alter-record-select").hide();
+    $("#action-select").show();
+}
+
+
+function fnChooseManagmentOption(){
+    $("#m_managment").show();
+    clearManagmentModal(false);
+    //data export button selected
+    $("#export-data_btn").click(function (){
+        //hide menu modal, show data export selection modal
+        $("#action-select").hide();
+        $("#export-data").show();
+        $("#export-select_btn").click(fnDataExport)
+    });
+    //alter records button selected
+    $("#alter-records_btn").click(function(){
+        //hide menu modal, show data field selection modal
+        $("#action-select").hide();
+        $("#alter-record-select").show();
+    });
+}
+
+function fnDataExport(){
+    //regex for valid file prefix
+    let re = /^[\w\- ]+$/;
+    let file_label = document.getElementById("file-name_txtbx").value;
+    //if textbox entry is not a valid file prefix, notify user
+    if ( !re.test(file_label)) {
+        alert("Invalid file label");
+        return;
+    }
+    //Possible Tables to Export
+    var boxes = ["Tutors","TutorTimes","TutorsClass","TimeSheet","TimeVisited"];
+    //Export chosen Tables to CSV
+    for(i=0; i<boxes.length;++i) {
+        if (document.getElementById((boxes[i]+"_chk")).checked) {
+            fnTableExport(boxes[i], file_label);
+        }
+    }
+
+}

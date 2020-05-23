@@ -8,3 +8,6 @@ In order to connect to the database, you must have a file in this folder titled 
 <password>
 <database_name>
 ```
+
+## Credits
+Solution for writing to (CSV)[https://bezkoder.com/node-js-export-mysql-csv-file/]

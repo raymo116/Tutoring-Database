@@ -86,3 +86,39 @@
     </div>
     </div>
 </div>
+
+
+
+<!-- TLT Managment Modal -->
+<div id="m_managment" class="modal">
+    <!-- Modal Content -->
+    <div class="modal-content">
+        <span class="close" id="admin_close">&times;</span>
+
+        <div id="action-select">
+            <button type="button" id="export-data_btn" name="export" class="normal">Export Data</button>
+            <br/>
+            <button type="button" id="alter-records_btn" name="alter" class="normal">Alter Records</button>
+        </div>
+
+        <div id="export-data">
+            <h2>Select Data to Export as CSV</h2>
+            Tutors: <input type="checkbox" id="Tutors_chk">
+            <br/>
+            Tutor Schedules: <input type="checkbox" id="TutorTimes_chk">
+            <br/>
+            Tutor Classes: <input type="checkbox" id="TutorsClass_chk">
+            <br/>
+            Tutor Timesheets: <input type="checkbox" id="TimeSheet_chk">
+            <br/>
+            Student Visits: <input type="checkbox" id="TimeVisited_chk">
+            <br/>
+            <label for="file-name_txtbx">Label for export (valid file names with no extension only)</label>
+            <input type="text" id="file-name_txtbx" name="file-name_txtbx">
+            </br>
+            <button type="button" id="export-select_btn" name="export-select_btn" class="normal">Export to CSV</button>
+        </div>
+        
+        <div id="alter-record-select">foobar</div>
+    </div>
+</div>
