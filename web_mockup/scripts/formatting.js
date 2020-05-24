@@ -6,7 +6,6 @@ function fnFillData(lstData, lstColNames, ...rest) {
     if(lstData.length == 0) {
         lstData = [{" ": "No Results"}];
     }
-    console.log((lstData));
 
     // Find the script for clicking on things
     var fnPopupScript;

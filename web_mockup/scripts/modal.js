@@ -40,7 +40,6 @@ function fnInitialSetup() {
             // Creates the query
             // ToDo: Escape query
             var query = mysql.format(SP_TUTOR_IN, [d, STUDENT_ID, selected.innerText]);
-            console.log(query);
             // Check the tutor in
             // console.log("running tutor query");
             fnRunQuery(query, function(...rest){
@@ -160,7 +159,6 @@ function chooseTableLayout() {
 
     // Populate the list of tables
     // We'll want to update this to something prettier eventually
-    console.log(this);
     fnRunQuery(SP_FIND_OPEN_TABLES, fnFillData, function(){}, "open-tables");
 }
 
@@ -226,7 +224,6 @@ function fnStudentLogInConfirmation(...rest){
         // ToDo: Need to make this error handling more bulletproof
         fnShowSnackbar("There was an error. Please try again.", false);
         // alert("There was an error. Please try again.");
-        console.log(rest);
     } else {
         // Lets the student know they have successfully logged in
         // ToDo: Need to make this less ugly
