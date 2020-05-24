@@ -24,6 +24,9 @@ function fnSetupNavigationButtons() {
         fnCreateLoadingScreen('m_info-content', 'Finding Tutors');
         fnStartLogin();
     });
-}
 
-// END INITIAL SETUP -----------------------------------------------------------
+    $('#managment_menu').click(function(){
+        //show administrative modal via function in modal.js
+        fnChooseManagmentOption();
+    });
+}
