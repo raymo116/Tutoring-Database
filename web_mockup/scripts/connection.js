@@ -50,6 +50,7 @@ function fnRunQuery(strQuery, fncallback, ...rest) {
             rows = rows[0];
 
         // Run the callback
+
         fncallback(rows, fields, rest);
     });
 

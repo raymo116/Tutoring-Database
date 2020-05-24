@@ -11,3 +11,5 @@ var SP_TUTOR_IN = `call sp_tutor_in(?, ?, ?);`;
 var SP_CHECK_IN_STUDENT = `call sp_student_in(?, ?, null);`;
 var SP_CLASSES_BY_TUTOR = `call sp_classes_by_tutor(?);`;
 var SP_GET_SINGLE_TUTOR_SCHEDULE = `call sp_get_single_tutor_schedule(?);`;
+var SP_REMOVE_TUTOR = 'call sp_delete_tutor(?)';
+var SP_ADD_TUTOR = 'call sp_add_tutor(?)';

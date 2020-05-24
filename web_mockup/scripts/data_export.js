@@ -15,7 +15,7 @@ function fnWriteToCSV(rows, fields, ...rest) {
     }
 
     //prepare output file
-    const ws = fs.createWriteStream(rest[0]+"_"+rest[1]+".csv");
+    const ws = fs.createWriteStream("./Data_Exports/"+rest[0][0]+"_"+rest[0][1]+".csv");
     //wite to output file
     fastcsv.write(data_json,{headers:true}).pipe(ws);
 }

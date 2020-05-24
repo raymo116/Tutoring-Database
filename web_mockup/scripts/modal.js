@@ -386,13 +386,23 @@ function fnSetTutor() {
 
 // BEGIN DATA MANAGMENT SECTION ------------------------------------------------
 
-function clearManagmentModal(hide) {
+function clearManagmentModal(hide = true) {
     if (hide) {
         $("#m_managment").hide();
     }
     $("#export-data").hide();
     $("#alter-record-select").hide();
+    $("#add-remove-tutor_m").hide();
     $("#action-select").show();
+    fnClearSearch();
+}
+
+function hideAllManagmentModal() {
+    $("#export-data").hide();
+    $("#alter-record-select").hide();
+    $("#add-remove-tutor_m").hide();
+    $("#action-select").hide();
+    fnClearSearch();
 }
 
 
@@ -411,6 +421,7 @@ function fnChooseManagmentOption(){
         //hide menu modal, show data field selection modal
         $("#action-select").hide();
         $("#alter-record-select").show();
+        fnAlterActionsMenu();
     });
 }
 
@@ -418,6 +429,7 @@ function fnDataExport(){
     //regex for valid file prefix
     let re = /^[\w\- ]+$/;
     let file_label = document.getElementById("file-name_txtbx").value;
+    if (file_label.length == 0) return;
     //if textbox entry is not a valid file prefix, notify user
     if ( !re.test(file_label)) {
         alert("Invalid file label");
@@ -426,10 +438,124 @@ function fnDataExport(){
     //Possible Tables to Export
     var boxes = ["Tutors","TutorTimes","TutorsClass","TimeSheet","TimeVisited"];
     //Export chosen Tables to CSV
+    var exported = 0;
     for(i=0; i<boxes.length;++i) {
         if (document.getElementById((boxes[i]+"_chk")).checked) {
+            exported++;
             fnTableExport(boxes[i], file_label);
         }
     }
-
+    //if at least one table was exported
+    if (exported>0) {
+        fnShowSnackbar("Your selected tables have been exported to the Data_Exports Folder", blGood = true);
+        clearManagmentModal();
+    }
 }
+
+function fnAlterActionsMenu() {
+    $("#add-tutor_btn").click(fnAddTutor);
+    $("#remove-tutor_btn").click(fnRemoveTutor);
+}
+
+function fnRemoveTutor(){
+    hideAllManagmentModal();
+    $("#add-remove-tutor_m").show();
+    $("#add-remove-tutor-title")[0].innerHTML = "Remove Tutor";
+    $("#student-select_btn").click(function() {
+        var search_str = document.getElementById("search-student_txtbx").value;
+        if(search_str.length>0){
+            fnFindTutor(search_str);
+        }
+    });
+}
+
+function fnAddTutor(){
+    hideAllManagmentModal();
+    $("#add-remove-tutor_m").show();
+    $("#add-remove-tutor-title")[0].innerHTML = "Add Tutor";
+    $("#student-select_btn").click(function() {
+        var search_str = document.getElementById("search-student_txtbx").value;
+        if (search_str.length>0){
+            fnFindStudent(search_str);
+        }
+    })
+}
+
+//fuction is nearly identical to fnFindStudent, but enough minor differences
+//that combining both functions is more work than defining two functions
+function fnFindTutor(search_str){
+    if (isNaN(search_str)) {
+        //string creates full name of student from FName, MName, LName fields for comparison to search string
+        full_name_str = "CONCAT(FNAME,IF( MName IS NULL, ' ', CONCAT(' ',MNAME,' ')), LName)";
+        //build sql query to search by name
+        sql_query = mysql.format("SELECT ID, FName, LName"+
+            " FROM Student" +
+            " WHERE "+ full_name_str+ " LIKE ? AND Is_deleted IS NULL AND "+
+            "ID IN (SELECT Tutor_ID FROM Tutors WHERE Is_deleted IS NULL);"
+        ,"%"+search_str+"%");
+        //runsql query and feed results to fnNewTutorSelect
+        fnRunQuery(sql_query,fnFillData, fnRemoveTutorSelect, "student_tbl");
+    }
+    else {
+        sql_query = mysql.format("SELECT ID, FName, LName FROM Student WHERE ID = ? AND Is_deleted IS NULL "+
+                                " AND ID IN(SELECT Tutor_ID FROM Tutors WHERE Is_deleted IS NULL);"
+                                ,parseInt(search_str));
+        fnRunQuery(sql_query,fnFillData,fnRemoveTutorSelect, "student_tbl");
+    }
+}
+
+function fnRemoveTutorSelect(e) {
+    var row = fnGetTextFromRow(e);
+    if(confirm("Remove " +row[1]+" "+row[2]+ " SID: "+row[0]+" from Tutors?")){
+        sql_update = mysql.format(SP_REMOVE_TUTOR, row[0]);
+        fnRunQuery(sql_update,function(rows, fields, rest){});
+        clearManagmentModal(true);
+        fnClearSearch();
+        document.getElementById("search-student_txtbx").value = "";
+        fnShowSnackbar("Removed "+row[1]+" "+row[2]+" SID:"+ row[0]+" from Tutors",blGood=true);
+    }
+}
+
+function fnFindStudent(search_str) {
+    //if search string is not an id
+    if (isNaN(search_str)) {
+        //string creates full name of student from FName, MName, LName fields for comparison to search string
+        full_name_str = "CONCAT(FNAME,IF( MName IS NULL, ' ', CONCAT(' ',MNAME,' ')), LName)";
+        //build sql query to search by name
+        sql_query = mysql.format("SELECT ID, FName, LName"+
+            " FROM Student" +
+            " WHERE "+ full_name_str+ " LIKE ? AND Is_deleted IS NULL AND "+
+            "ID NOT IN (SELECT Tutor_ID FROM Tutors WHERE Is_deleted IS NULL);"
+        ,"%"+search_str+"%");
+        //runsql query and feed results to fnNewTutorSelect
+        fnRunQuery(sql_query,fnFillData, fnNewTutorSelect, "student_tbl");
+    }
+    else {
+        sql_query = mysql.format("SELECT ID, FName, LName FROM Student WHERE ID = ? AND Is_deleted IS NULL "+
+                                " AND ID NOT IN(SELECT Tutor_ID FROM Tutors WHERE Is_deleted IS NULL);"
+                                ,parseInt(search_str));
+        fnRunQuery(sql_query,fnFillData,fnNewTutorSelect, "student_tbl");
+    }
+}
+
+
+function fnNewTutorSelect(e)
+{
+    var row = fnGetTextFromRow(e);
+    if( confirm("Add "+row[1]+" "+row[2]+ " SID: "+row[0]+" as Tutor?") ){
+        sql_update = mysql.format(SP_ADD_TUTOR,row[0]);
+        fnRunQuery(sql_update,function(rows, fields, rest){});
+        clearManagmentModal(true);
+        fnClearSearch();
+        fnShowSnackbar("Added "+row[1]+" "+row[2]+" SID:"+ row[0]+" as Tutor",blGood=true);
+    }
+}
+
+
+function fnClearSearch(){
+    document.getElementById("search-student_txtbx").value = '';
+    //fnFillData(["Empty"],[]);
+    document.getElementById("student_tbl").innerHTML = '';
+}
+
+function doNothing(foobar){}

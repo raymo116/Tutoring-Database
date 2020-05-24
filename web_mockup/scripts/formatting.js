@@ -1,8 +1,10 @@
 // Formats a grid based on query data
 // Might want to remove lstColNames because it appers to not be in use
 function fnFillData(lstData, lstColNames, ...rest) {
+    //alert(rest);
     // If there's no data, there's no point in filling anything out
     if(lstData.length == 0) return;
+    console.log((lstData));
 
     // Find the script for clicking on things
     var fnPopupScript;
@@ -24,6 +26,7 @@ function fnFillData(lstData, lstColNames, ...rest) {
     }
 
     // Find the grid target
+    //alert(targetID);
     var grid = $('#'+targetID)[0];
     grid.innerHTML = '';
 
