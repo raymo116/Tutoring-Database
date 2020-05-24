@@ -511,7 +511,6 @@ function fnRemoveTutorSelect(e) {
         fnRunQuery(sql_update,function(rows, fields, rest){});
         clearManagmentModal(true);
         fnClearSearch();
-        document.getElementById("search-student_txtbx").value = "";
         fnShowSnackbar("Removed "+row[1]+" "+row[2]+" SID:"+ row[0]+" from Tutors",blGood=true);
     }
 }
@@ -554,6 +553,7 @@ function fnNewTutorSelect(e)
 
 function fnClearSearch(){
     document.getElementById("search-student_txtbx").value = '';
+    //document.getElementByID("search-student_txtbx").focus();
     //fnFillData(["Empty"],[]);
     document.getElementById("student_tbl").innerHTML = '';
 }
