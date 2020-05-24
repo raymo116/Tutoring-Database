@@ -27,6 +27,29 @@ function fnInitialSetup() {
     });
 
     $('#btn_select').click(fnSetTutor);
+
+    $('#table-select').click(function() {
+        var selected = $("#open-tables").find(".selected")[0];
+
+        if(selected === undefined) {
+            fnShowSnackbar("You need to select a table", false);
+        } else {
+            // Get the current date in mysql format
+            var d = getDateTime();
+
+            // Creates the query
+            // ToDo: Escape query
+            var query = mysql.format(SP_TUTOR_IN, [d, STUDENT_ID, selected.innerText]);
+            console.log(query);
+            // Check the tutor in
+            // console.log("running tutor query");
+            fnRunQuery(query, function(...rest){
+                clearloginModal(true);
+                // alert("You are checked in to tutor");
+                fnShowSnackbar("You are checked in to tutor", true);
+            });
+        }
+    });
 }
 
 // INITIAL SETUP ---------------------------------------------------------------
@@ -133,41 +156,44 @@ function chooseTableLayout() {
     $('#choose-table').show();
     $('#table-select').show();
 
-    console.log(STUDENT_ID);
+    // console.log(STUDENT_ID);
 
     // Populate the list of tables
     // We'll want to update this to something prettier eventually
-    fnRunQuery(SP_FIND_OPEN_TABLES, fnFillData, fnChooseTable, "open-tables");
+    console.log(this);
+    fnRunQuery(SP_FIND_OPEN_TABLES, fnFillData, function(){}, "open-tables");
 }
 
 // Selects the current table
 function fnChooseTable(e) {
-    console.log(STUDENT_ID);
-    // Checks to make sure that the row is selected
-    if(e.hasClass("selected")) {
-        // Set the onclick function to
-        $('#table-select').click(function() {
-            // Get the current date in mysql format
-            var d = getDateTime();
-
-            // Creates the query
-            // ToDo: Escape query
-            var query = mysql.format(SP_TUTOR_IN, [d, STUDENT_ID, e[0].innerText]);
-            // Check the tutor in
-            fnRunQuery(query, function(...rest){
-                clearloginModal(true);
-                // alert("You are checked in to tutor");
-                fnShowSnackbar("You are checked in to tutor", true);
-            });
-        });
-    } else {
-        // Set the onclick function to alert them
-        // ToDo: make this prettier
-        $('#table-select').click(function() {
-                fnShowSnackbar("You need to select a table", false);
-                // alert("You need to select a table");
-            });
-    }
+    // // console.log(STUDENT_ID);
+    // // Checks to make sure that the row is selected
+    // if(e.hasClass("selected")) {
+    //     // Set the onclick function to
+    //     $('#table-select').click(function() {
+    //         // Get the current date in mysql format
+    //         var d = getDateTime();
+    //
+    //         // Creates the query
+    //         // ToDo: Escape query
+    //         var query = mysql.format(SP_TUTOR_IN, [d, STUDENT_ID, e[0].innerText]);
+    //         console.log(query);
+    //         // Check the tutor in
+    //         // console.log("running tutor query");
+    //         fnRunQuery(query, function(...rest){
+    //             clearloginModal(true);
+    //             // alert("You are checked in to tutor");
+    //             fnShowSnackbar("You are checked in to tutor", true);
+    //         });
+    //     });
+    // } else {
+    //     // Set the onclick function to alert them
+    //     // ToDo: make this prettier
+    //     $('#table-select').click(function() {
+    //             fnShowSnackbar("You need to select a table", false);
+    //             // alert("You need to select a table");
+    //         });
+    // }
 }
 
 // Gets the current date-time in mysql format
@@ -246,7 +272,7 @@ function fnSubmitID() {
     // Gets the student ID
     // Need to replace this eventually
     STUDENT_ID = $("#id_login")[0].value;
-    console.log(STUDENT_ID);
+    // console.log(STUDENT_ID);
 
     // Clear the input
     $("#id_login")[0].value = "";
@@ -299,7 +325,7 @@ function fnProcessLogin(...rest){
         // If there was an unexpected output
         default:
             fnFlash();
-            console.log(rest[0][0]['Output']);
+            // console.log(rest[0][0]['Output']);
     }
 }
 
@@ -371,7 +397,7 @@ function fnSetTutor() {
             if(rest[0][0]['Output'] === -1) {
                 // alert("error");
                 fnShowSnackbar("error", false);
-                console.log(rest);
+                // console.log(rest);
             } else {
                 // alert(`You have successfully logged in with ID# ${STUDENT_ID}.`)
                 fnShowSnackbar(`You have successfully logged in with ID# ${STUDENT_ID}.`, true)
