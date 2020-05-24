@@ -3,7 +3,9 @@
 function fnFillData(lstData, lstColNames, ...rest) {
     //alert(rest);
     // If there's no data, there's no point in filling anything out
-    if(lstData.length == 0) return;
+    if(lstData.length == 0) {
+        lstData = [{" ": "No Results"}];
+    }
     console.log((lstData));
 
     // Find the script for clicking on things
